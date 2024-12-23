@@ -11,4 +11,8 @@ public class HomeController {
     return "index"; // index.html 템플릿을 반환
   }
 
+  @GetMapping("/district")
+  public String district() {
+    return "district";
+  }
 }
