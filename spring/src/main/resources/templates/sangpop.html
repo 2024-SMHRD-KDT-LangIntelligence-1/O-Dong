@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>지도와 팝업</title>
-    <link rel="stylesheet" href="/css/sangpop.css" />
+    <link rel="stylesheet" href="/css/sangpop.css?after" />
   </head>
   <body>
     <!-- 헤더 -->
@@ -26,11 +26,10 @@
         <br />
         <!-- 위치 검색 -->
         <div class="location-search">
-          <input
-            type="text"
-            id="search-location"
-            placeholder="주소를 입력하세요"
-          />
+          <label for="search-location">위치 검색</label>
+          <br />
+          <input type="text" id="search-location" placeholder="주소 검색" />
+          <div id="search-results"></div>
           <button id="search-btn" class="search-btn">검색</button>
         </div>
         <br />

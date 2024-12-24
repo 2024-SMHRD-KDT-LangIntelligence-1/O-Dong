@@ -40,52 +40,13 @@
           $("#popup").load("/sangpop.html");
         </script>
       </div>
+      <div id="clickLatlng"></div>
     </div>
 
     <script
       type="text/javascript"
       src="//dapi.kakao.com/v2/maps/sdk.js?appkey=5ee6076af595f4d8884d46e046f17e2e&libraries=services"
     ></script>
-    <script>
-      // 지도 생성
-      var mapContainer = document.getElementById("map"), // 지도를 표시할 div
-        mapOption = {
-          center: new kakao.maps.LatLng(37.566826, 126.9786567), // 초기 지도 중심좌표
-          level: 3, // 초기 확대 레벨
-        };
-
-      var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
-      var geocoder = new kakao.maps.services.Geocoder(); // 주소-좌표 변환 객체 생성
-      var marker = new kakao.maps.Marker(); // 지도에 표시할 마커 생성
-
-      // 검색 버튼 클릭 이벤트 처리
-      document
-        .getElementById("search-btn")
-        .addEventListener("click", function () {
-          var address = document.getElementById("search-location").value; // 입력된 주소 가져오기
-
-          // 주소로 좌표를 검색
-          geocoder.addressSearch(address, function (result, status) {
-            if (status === kakao.maps.services.Status.OK) {
-              var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-
-              // 지도 중심을 이동
-              map.setCenter(coords);
-
-              // 마커를 새 좌표로 이동
-              marker.setPosition(coords);
-              marker.setMap(map);
-
-              // 인포윈도우에 주소 표시
-              var infowindow = new kakao.maps.InfoWindow({
-                content: '<div style="padding:5px;">' + address + "</div>",
-              });
-              infowindow.open(map, marker);
-            } else {
-              alert("해당 주소를 찾을 수 없습니다.");
-            }
-          });
-        });
-    </script>
+    <script src="/js/k_map.js"></script>
   </body>
 </html>
