@@ -70,8 +70,8 @@ header h1 {
 
 /* 아이디 중복 확인 버튼 스타일 */
 
-.input-group input#username {
-  width: 450px;
+.input-group input#user_id {
+  width: 440px;
   height: 55px; /* 입력창 높이를 50px로 지정 */
   padding: 20px; /* 입력 필드 내부 여백 */
   border: 1px solid #ddd;
@@ -79,13 +79,13 @@ header h1 {
   font-size: 18px;
   background-color: #f9f9f9;
 }
-.username-group {
+.userid-group {
   display: flex; /* 버튼과 입력란을 가로로 배치 */
   align-items: center; /* 아이템들을 세로로 정렬 */
   justify-content: space-between; /* 버튼과 입력란 사이 여백 */
 }
 
-.username-group input {
+.userid-group input {
   width: 100%; /* 입력란 너비를 80%로 설정 */
 }
 

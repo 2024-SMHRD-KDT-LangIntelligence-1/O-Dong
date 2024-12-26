@@ -141,10 +141,10 @@ function createCircle(latlng) {
     radius: 500, // 반경 500m
     strokeWeight: 5, // 선 두께
     strokeColor: "#FFAE00", // 선 색상
-    strokeOpacity: 0, // 선 투명도
+    strokeOpacity: 0.3, // 선 투명도
     strokeStyle: "solid", // 선 스타일
     fillColor: "#FFCF80", // 채우기 색상
-    fillOpacity: 0, // 채우기 투명도
+    fillOpacity: 0.3, // 채우기 투명도
   });
 
   // 다각형 지도에 추가

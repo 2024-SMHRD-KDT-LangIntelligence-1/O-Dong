@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,14 +11,24 @@
       <header>
         <h1>회원가입</h1>
       </header>
-      <form action="/signup" method="POST" class="signup-form">
+      <form action="/member/signup.do" method="POST" class="signup-form">
         <div class="input-group">
-          <label for="username">아이디</label>
-          <div class="username-group">
+          <label for="username">이름</label>
+          <input
+            type="text"
+            id="user_name"
+            name="user_name"
+            placeholder="이름을 입력하세요"
+            required
+          />
+        </div>
+        <div class="input-group">
+          <label for="userid">아이디</label>
+          <div class="userid-group">
             <input
               type="text"
-              id="username"
-              name="username"
+              id="user_id"
+              name="user_id"
               placeholder="아이디를 입력하세요"
               required
             />
@@ -35,8 +45,8 @@
           <label for="password">비밀번호</label>
           <input
             type="password"
-            id="password"
-            name="password"
+            id="user_pw"
+            name="user_pw"
             placeholder="비밀번호를 입력하세요"
             required
           />
@@ -52,19 +62,31 @@
           />
         </div>
         <div class="input-group">
-          <label for="nickname">닉네임</label>
+          <label for="phone">휴대폰 번호</label>
           <input
-            type="text"
-            id="nickname"
-            name="nickname"
-            placeholder="닉네임을 입력하세요"
+            type="tel"
+            id="user_phone"
+            name="user_phone"
+            placeholder="휴대폰 번호를 입력하세요 (예: 010-1234-5678)"
+            pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}"
             required
           />
         </div>
+        <div class="input-group">
+          <label for="email">이메일</label>
+          <input
+            type="email"
+            id="user_email"
+            name="user_email"
+            placeholder="이메일 주소를 입력하세요"
+            required
+          />
+        </div>
+
         <button type="submit" class="submit-btn">회원가입</button>
       </form>
       <footer>
-        <p>이미 계정이 있으신가요? <a href="#">로그인</a></p>
+        <p>이미 계정이 있으신가요? <a href="/login">로그인</a></p>
       </footer>
     </div>
     <!-- 
