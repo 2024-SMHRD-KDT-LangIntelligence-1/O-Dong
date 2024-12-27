@@ -15,4 +15,9 @@ public class HomeController {
   public String district() {
     return "district";
   }
+
+  @GetMapping("/sangpop")
+  public String getSanpop() {
+    return "sangpop"; // sanpop.html 템플릿을 반환
+  }
 }

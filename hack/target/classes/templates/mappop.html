@@ -8,15 +8,20 @@
   </head>
   <body>
     <div class="category-buttons">
-      <button class="category-btn" data-category="restaurant">버튼 1</button>
-      <button class="category-btn" data-category="cafe">버튼 2</button>
-      <button class="category-btn" data-category="pub">버튼 3</button>
-      <button class="category-btn" data-category="mart">버튼 4</button>
+      <button class="category-btn" data-category="district">
+        상권메뉴비교
+      </button>
+      <button class="category-btn" data-category="keyword">키워드</button>
+      <button class="category-btn" data-category="pub">유사메뉴</button>
+      <!-- <button class="category-btn" data-category="mart">버튼 4</button> -->
     </div>
     <script>
       document.querySelectorAll(".category-btn").forEach((button) => {
         button.addEventListener("click", function () {
           const category = this.getAttribute("data-category");
+          if (category == "ditrict") {
+          } else if (category == "keyword") {
+          }
         });
       });
     </script>

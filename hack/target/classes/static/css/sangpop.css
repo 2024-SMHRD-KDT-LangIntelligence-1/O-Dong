@@ -14,8 +14,9 @@ body {
 }
 
 /* 왼쪽 팝업창 */
-.popup {
-  width: 350px;
+.spopup {
+  /* display: none; */
+  width: 500px;
   background-color: white;
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);

@@ -3,8 +3,9 @@
   justify-content: center; /* 버튼들을 가운데 정렬 */
   gap: 30px; /* 버튼 간 간격을 gap 속성으로 조정 */
   margin: 10px;
+  top: 20px;
   position: absolute;
-  left: 35%;
+  left: 45%;
   z-index: 10;
 }
 
