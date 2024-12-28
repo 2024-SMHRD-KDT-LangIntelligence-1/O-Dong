@@ -16,8 +16,24 @@ public class HomeController {
     return "district";
   }
 
-  @GetMapping("/sangpop")
-  public String getSanpop() {
-    return "sangpop"; // sanpop.html 템플릿을 반환
+  @GetMapping("/moon_index")
+  public String moon() {
+    return "moon_index";
   }
+
+  @GetMapping("/moon")
+  public String write() {
+    return "moon";
+  }
+
+  @GetMapping("/gongzi")
+  public String gongzi() {
+    return "gongzi_index";
+  }
+
+  @GetMapping("/service")
+  public String service() {
+    return "service";
+  }
+
 }
