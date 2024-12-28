@@ -70,17 +70,13 @@ body {
 }
 
 .close-btn {
-  background-color: #e91e63;
+  background-color: #786fa6;
   color: white;
   padding: 8px 16px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   float: right;
-}
-
-.close-btn:hover {
-  background-color: #d32f2f;
 }
 
 /* 버튼 텍스트 스타일 */

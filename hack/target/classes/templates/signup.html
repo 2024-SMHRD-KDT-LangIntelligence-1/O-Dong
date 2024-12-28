@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>회원가입</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <link rel="stylesheet" href="/css/signup.css" />
   </head>
   <body>
@@ -32,14 +33,11 @@
               placeholder="아이디를 입력하세요"
               required
             />
-            <button
-              type="button"
-              class="check-username"
-              onclick="checkUsername()"
-            >
+            <button type="button" class="check-username" id="overlay">
               중복 확인
             </button>
           </div>
+          <p id="result"></p>
         </div>
         <div class="input-group">
           <label for="password">비밀번호</label>
@@ -89,17 +87,77 @@
         <p>이미 계정이 있으신가요? <a href="/login">로그인</a></p>
       </footer>
     </div>
-    <!-- 
     <script>
-      function checkUsername() {
-        const username = document.getElementById("username").value;
-        // 간단한 중복 확인 예시 (실제 서버와의 연동 필요)
-        if (username === "") {
-          alert("아이디를 입력해주세요.");
-        } else {
-          alert("아이디가 사용 가능합니다!"); // 실제 중복 체크 로직은 서버에서 처리
+      // document.getElementById("overlay").addEventListener("click", function () {
+      //   const userId = document.getElementById("user_id").value; // 입력된 user_id 값을 가져옴
+
+      //   // user_id 값이 비어있는지 확인
+
+      //   // AJAX 요청 보내기
+      //   $.ajax({
+      //     url: "/overlay.do", // 중복 확인 API URL
+      //     type: "GET",
+      //     data: { user_id: user_id },
+      //     success: function (response) {
+      //       // 중복 확인 결과에 따른 메시지 출력
+      //       if (response) {
+      //         document.getElementById("result").innerHTML =
+      //           "사용할 수 없는 아이디입니다.";
+      //         document.getElementById("result").style.color = "red";
+      //       } else {
+      //         document.getElementById("result").innerHTML =
+      //           "사용 가능한 아이디입니다.";
+      //         document.getElementById("result").style.color = "green";
+      //       }
+      //     },
+      //     error: function () {
+      //       document.getElementById("result").innerHTML =
+      //         "오류가 발생했습니다.";
+      //     },
+      //   });
+      // });
+      document.getElementById("overlay").addEventListener("click", function () {
+        const userId = document.getElementById("user_id").value; // 입력된 user_id 값을 가져옴
+
+        // user_id 값이 비어있는지 확인
+        if (!userId) {
+          document.getElementById("result").innerHTML =
+            "아이디를 입력해주세요.";
+          document.getElementById("result").style.color = "red";
+          return;
         }
-      }
-    </script> -->
+
+        // 버튼을 비활성화하여 중복 클릭을 방지
+        const overlayButton = document.getElementById("overlay");
+        overlayButton.disabled = true;
+
+        // AJAX 요청 보내기
+        $.ajax({
+          url: "/overlay.do", // 중복 확인 API URL
+          type: "GET",
+          data: { user_id: userId },
+          success: function (response) {
+            // 중복 확인 결과에 따른 메시지 출력
+            if (response) {
+              document.getElementById("result").innerHTML =
+                "사용할 수 없는 아이디입니다.";
+              document.getElementById("result").style.color = "red";
+            } else {
+              document.getElementById("result").innerHTML =
+                "사용 가능한 아이디입니다.";
+              document.getElementById("result").style.color = "green";
+            }
+          },
+          error: function () {
+            document.getElementById("result").innerHTML =
+              "오류가 발생했습니다.";
+          },
+          complete: function () {
+            // 요청 완료 후 버튼을 다시 활성화
+            overlayButton.disabled = false;
+          },
+        });
+      });
+    </script>
   </body>
 </html>

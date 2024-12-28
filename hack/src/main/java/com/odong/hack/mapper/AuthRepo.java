@@ -6,4 +6,6 @@ import com.odong.hack.entity.*;
 
 public interface AuthRepo extends JpaRepository<AuthEntity, String> {
     AuthEntity findByUserIdAndUserPw(String user_id, String user_pw);
+
+    boolean existsByUserId(String user_id);
 }
