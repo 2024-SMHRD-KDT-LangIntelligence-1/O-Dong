@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>지도와 팝업</title>
+    <link rel="stylesheet" href="/css/sangpop.css?after" />
+  </head>
+  <body>
+    <!-- 헤더 -->
+    <div id="popup" class="popup">
+      <div class="popup-header">
+        <h3>위치 선택</h3>
+        <button class="close-btn" id="closeModalBtn">닫기</button>
+      </div>
+      <div class="popup-body">
+        <!-- 위치 선택 토글 메뉴 -->
+        <div class="location-toggle">
+          <label for="location">위치 선택</label>
+          <select id="location">
+            <option value="광주 동명동">광주 동명동</option>
+            <option value="성수동 2가">성수동 2가</option>
+            <option value="두류동">두류동</option>
+            <option value="장전동">장전동</option>
+          </select>
+        </div>
+        <br />
+        <!-- 위치 검색 -->
+        <div class="location-search">
+          <label for="search-location">위치 검색</label>
+          <br />
+          <input type="text" id="search-location" placeholder="주소 검색" />
+          <div id="search-results"></div>
+          <button id="search-btn" class="search-btn">검색</button>
+        </div>
+        <br />
+        <!-- 체크박스 -->
+        <div class="checkbox-group">
+          <label><input type="checkbox" /> 상권별</label>
+          <label><input type="checkbox" /> 공통고려메뉴</label>
+        </div>
+        <br />
+        <!-- 분석하기 버튼 -->
+        <button id="analyze-button" class="analyze-btn">분석하기</button>
+      </div>
+    </div>
+
+    <script>
+      // 주소 검색 이벤트
+      document
+        .getElementById("search-location")
+        .addEventListener("input", function () {
+          var keyword = this.value;
+
+          if (keyword.length > 0) {
+            // 주소 검색을 위한 카카오 API 호출
+            geocoder.addressSearch(keyword, function (result, status) {
+              if (status === kakao.maps.services.Status.OK) {
+                // 검색 결과가 있으면 결과 목록 표시
+                var searchResults = document.getElementById("search-results");
+                searchResults.innerHTML = ""; // 이전 결과 지우기
+
+                result.forEach(function (item) {
+                  var listItem = document.createElement("div");
+                  listItem.textContent = item.address_name;
+                  listItem.style.padding = "5px";
+                  listItem.style.cursor = "pointer";
+                  listItem.onclick = function () {
+                    // 목록 클릭 시 해당 위치로 이동하고 마커 추가
+                    var coords = new kakao.maps.LatLng(item.y, item.x);
+                    map.setCenter(coords);
+
+                    // 기존 마커 제거
+                    if (currentMarker) {
+                      currentMarker.setMap(null);
+                    }
+
+                    // 새로운 마커 생성
+                    currentMarker = new kakao.maps.Marker({
+                      position: coords,
+                      map: map,
+                    });
+
+                    // 클릭한 위치의 위도, 경도 표시
+                    var message = "위도: " + item.y + ", 경도: " + item.x;
+                    document.getElementById("clickLatlng").innerHTML = message;
+
+                    // 다각형 생성
+                    createCircle(coords);
+
+                    // 결과 목록 숨기기
+                    searchResults.innerHTML = "";
+                  };
+                  searchResults.appendChild(listItem);
+                });
+              }
+            });
+          } else {
+            // 입력값이 없으면 목록 지우기
+            document.getElementById("search-results").innerHTML = "";
+          }
+        });
+
+      // 검색 버튼 클릭 이벤트
+      document
+        .getElementById("search-btn")
+        .addEventListener("click", function () {
+          var address = document.getElementById("search-location").value;
+
+          // 주소로 좌표 검색
+          geocoder.addressSearch(address, function (result, status) {
+            if (status === kakao.maps.services.Status.OK) {
+              var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+              // 지도 중심 이동
+              map.setCenter(coords);
+
+              // 이전 검색 마커가 있으면 제거
+              if (currentMarker) {
+                currentMarker.setMap(null);
+              }
+
+              // 검색된 위치에 새 마커 추가
+              currentMarker = new kakao.maps.Marker({
+                position: coords,
+                map: map,
+              });
+
+              // 다각형 생성
+              createCircle(coords);
+            } else {
+              alert("해당 주소를 찾을 수 없습니다.");
+            }
+          });
+        });
+
+      const closeModalBtn2 = document.getElementById("closeModalBtn");
+      // 팝업창 닫기
+      closeModalBtn2?.addEventListener("click", () => {
+        popup.style.display = "none";
+      });
+    </script>
+  </body>
+</html>

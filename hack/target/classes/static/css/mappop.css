@@ -1,0 +1,33 @@
+.category-buttons {
+  display: flex;
+  justify-content: center; /* 버튼들을 가운데 정렬 */
+  gap: 30px; /* 버튼 간 간격을 gap 속성으로 조정 */
+  margin: 10px;
+  top: 20px;
+  position: absolute;
+  left: 40%;
+  z-index: 10;
+}
+
+.category-btn {
+  display: flex;
+  height: 38px;
+  padding: 0px 18px 0px 18px;
+  border-radius: 19px;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 4px 0px;
+  -webkit-box-align: center;
+  align-items: center;
+  border: 1px solid rgb(255, 255, 255);
+  outline: none;
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+}
+
+.category-btn:hover {
+  color: #007bff; /* 마우스를 올렸을 때 글자 색상이 파란색으로 변함 */
+  transform: scale(1.1);
+}
+
+.category-btn:focus {
+  outline: none;
+}
