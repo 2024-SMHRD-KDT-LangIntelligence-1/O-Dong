@@ -30,4 +30,13 @@ public class CafeService {
             return menuMap;
         }).collect(Collectors.toList());
     }
+
+    public List<String> searchExactDong(String dong) {
+        return menurepo.findExactDong(dong);
+    }
+
+    // 동 이름으로 시작하는 항목 검색
+    public List<String> searchDongStartingWith(String query) {
+        return menurepo.findDongStartingWith(query);
+    }
 }

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/css/keypop.css" />
     <link rel="stylesheet" href="/css/repop.css" />
     <link rel="stylesheet" href="/css/inpop.css" />
+    <link rel="stylesheet" href="/css/analpop.css" />
     <style>
       .map_wrap {
         margin-top: 3px;
@@ -39,8 +40,12 @@
         <!-- <div th:replace="~{keypop.html}"></div> -->
         <!-- <div th:replace="~{sangpop.html}"></div> -->
         <div class="category-buttons">
+          <!-- 상권 1개 -->
           <button id="opensang" class="category-btn" data-category="district">
             상권메뉴비교
+          </button>
+          <button id="opensang2" class="category-btn" data-category="district">
+            상권메뉴비교2
           </button>
           <button id="openkey" class="category-btn" data-category="keyword">
             키워드
@@ -48,6 +53,7 @@
           <button id="openmenu" class="category-btn" data-category="pub">
             유사메뉴
           </button>
+
           <!-- <button class="category-btn" data-category="mart">버튼 4</button> -->
         </div>
       </div>
@@ -88,22 +94,11 @@
           <button class="close-btn" id="closeMapModalBtn">닫기</button>
         </div>
         <div class="popup-body">
-          <!-- 위치 선택 토글 메뉴 -->
-          <div class="location-toggle">
-            <label for="location">위치 선택</label>
-            <select id="location">
-              <option value="광주 동명동">광주 동명동</option>
-              <option value="성수동 2가">성수동 2가</option>
-              <option value="두류동">두류동</option>
-              <option value="장전동">장전동</option>
-            </select>
-          </div>
-          <br />
           <!-- 위치 검색 -->
           <div class="location-search">
             <label for="search-location">위치 검색</label>
             <br />
-            <input type="text" id="search-location" placeholder="주소 검색" />
+            <input type="text" id="dsearch-location2" placeholder="주소 검색" />
             <div id="search-results"></div>
             <button id="search-btn" class="search-btn">검색</button>
           </div>
@@ -118,9 +113,10 @@
           <button id="analyze-button" class="analyze-btn">분석하기</button>
         </div>
       </div>
+
       <div id="k-popup" class="ipopup" style="display: none">
         <div class="popup-header">
-          <h3>위치 선택</h3>
+          <h3>키워드 입력</h3>
           <button class="close-btn" id="closekeyModalBtn">닫기</button>
         </div>
         <label for="keyword"></label>
@@ -142,30 +138,46 @@
         <h3>메뉴 선택</h3>
         <button class="close-btn" id="closeModalBtn">닫기</button>
       </div>
+      <div class="location-search">
+        <label for="search-location"></label>
+        <br />
+        <input type="text" id="search-location2" placeholder="주소 검색" />
+        <div id="search-results2"></div>
+        <button id="search-btn2" class="search-btn">검색</button>
+      </div>
+
       <div class="popup-content">
         <!-- 커피류 -->
         <div class="menu-category coffee">
           <h3>커피류</h3>
           <div class="menu-item">
-            <button class="toggle-btn">아메리카노</button>
+            <button class="toggle-btn" data-menu="아메리카노">
+              아메리카노
+            </button>
           </div>
           <div class="menu-item">
-            <button class="toggle-btn">카페라떼</button>
+            <button class="toggle-btn" data-menu="카페라떼">카페라떼</button>
           </div>
           <div class="menu-item">
-            <button class="toggle-btn">에스프레소</button>
+            <button class="toggle-btn" data-menu="에스프레소">
+              에스프레소
+            </button>
           </div>
           <div class="menu-item">
-            <button class="toggle-btn">플랫화이트</button>
+            <button class="toggle-btn" data-menu="플랫화이트">
+              플랫화이트
+            </button>
           </div>
           <div class="menu-item">
-            <button class="toggle-btn">바닐라 라떼</button>
+            <button class="toggle-btn" data-menu="바닐라 라떼">
+              바닐라 라떼
+            </button>
           </div>
           <div class="menu-item">
-            <button class="toggle-btn">카페모카</button>
+            <button class="toggle-btn" data-menu="카페모카">카페모카</button>
           </div>
           <div class="menu-item">
-            <button class="toggle-btn">콜드브루</button>
+            <button class="toggle-btn" data-menu="콜드브루">콜드브루</button>
           </div>
         </div>
 
@@ -173,19 +185,19 @@
         <div class="menu-category tea">
           <h3>차류</h3>
           <div class="menu-item">
-            <button class="toggle-btn">녹차</button>
+            <button class="toggle-btn" data-menu="녹차">녹차</button>
           </div>
           <div class="menu-item">
-            <button class="toggle-btn">말차 라떼</button>
+            <button class="toggle-btn" data-menu="말차 라떼">말차 라떼</button>
           </div>
           <div class="menu-item">
-            <button class="toggle-btn">얼그레이</button>
+            <button class="toggle-btn" data-menu="얼그레이">얼그레이</button>
           </div>
           <div class="menu-item">
-            <button class="toggle-btn">버블티</button>
+            <button class="toggle-btn" data-menu="버블티">버블티</button>
           </div>
           <div class="menu-item">
-            <button class="toggle-btn">캐모마일</button>
+            <button class="toggle-btn" data-menu="캐모마일">캐모마일</button>
           </div>
         </div>
 
@@ -193,16 +205,24 @@
         <div class="menu-category juice">
           <h3>주스/스무디류</h3>
           <div class="menu-item">
-            <button class="toggle-btn">오렌지 주스</button>
+            <button class="toggle-btn" data-menu="오렌지 주스">
+              오렌지 주스
+            </button>
           </div>
           <div class="menu-item">
-            <button class="toggle-btn">망고 스무디</button>
+            <button class="toggle-btn" data-menu="망고 스무디">
+              망고 스무디
+            </button>
           </div>
           <div class="menu-item">
-            <button class="toggle-btn">딸기 스무디</button>
+            <button class="toggle-btn" data-menu="딸기 스무디">
+              딸기 스무디
+            </button>
           </div>
           <div class="menu-item">
-            <button class="toggle-btn">레몬에이드</button>
+            <button class="toggle-btn" data-menu="레몬에이드">
+              레몬에이드
+            </button>
           </div>
         </div>
 
@@ -210,16 +230,22 @@
         <div class="menu-category cake">
           <h3>케이크류</h3>
           <div class="menu-item">
-            <button class="toggle-btn">뉴욕 치즈케이크</button>
+            <button class="toggle-btn" data-menu="뉴욕 치즈케이크">
+              뉴욕 치즈케이크
+            </button>
           </div>
           <div class="menu-item">
-            <button class="toggle-btn">브라우니</button>
+            <button class="toggle-btn" data-menu="브라우니">브라우니</button>
           </div>
           <div class="menu-item">
-            <button class="toggle-btn">딸기무스 케이크</button>
+            <button class="toggle-btn" data-menu="딸기무스 케이크">
+              딸기무스 케이크
+            </button>
           </div>
           <div class="menu-item">
-            <button class="toggle-btn">레몬 타르트</button>
+            <button class="toggle-btn" data-menu="레몬 타르트">
+              레몬 타르트
+            </button>
           </div>
         </div>
 
@@ -227,16 +253,20 @@
         <div class="menu-category bread">
           <h3>빵류</h3>
           <div class="menu-item">
-            <button class="toggle-btn">크루아상</button>
+            <button class="toggle-btn" data-menu="크루아상">크루아상</button>
           </div>
           <div class="menu-item">
-            <button class="toggle-btn">초코 크루아상</button>
+            <button class="toggle-btn" data-menu="초코 크루아상">
+              초코 크루아상
+            </button>
           </div>
           <div class="menu-item">
-            <button class="toggle-btn">바게트</button>
+            <button class="toggle-btn" data-menu="바게트">바게트</button>
           </div>
           <div class="menu-item">
-            <button class="toggle-btn">플레인 베이글</button>
+            <button class="toggle-btn" data-menu="플레인 베이글">
+              플레인 베이글
+            </button>
           </div>
         </div>
 
@@ -244,13 +274,15 @@
         <div class="menu-category snack">
           <h3>과자류</h3>
           <div class="menu-item">
-            <button class="toggle-btn">초코칩 쿠키</button>
+            <button class="toggle-btn" data-menu="초코칩 쿠키">
+              초코칩 쿠키
+            </button>
           </div>
           <div class="menu-item">
-            <button class="toggle-btn">마카롱</button>
+            <button class="toggle-btn" data-menu="마카롱">마카롱</button>
           </div>
           <div class="menu-item">
-            <button class="toggle-btn">애플파이</button>
+            <button class="toggle-btn" data-menu="애플파이">애플파이</button>
           </div>
         </div>
 
@@ -258,88 +290,67 @@
         <div class="menu-category meal">
           <h3>간단식사</h3>
           <div class="menu-item">
-            <button class="toggle-btn">햄 샌드위치</button>
+            <button class="toggle-btn" data-menu="햄 샌드위치">
+              햄 샌드위치
+            </button>
           </div>
           <div class="menu-item">
-            <button class="toggle-btn">치킨 샌드위치</button>
+            <button class="toggle-btn" data-menu="치킨 샌드위치">
+              치킨 샌드위치
+            </button>
           </div>
           <div class="menu-item">
-            <button class="toggle-btn">닭가슴살 샐러드</button>
+            <button class="toggle-btn" data-menu="닭가슴살 샐러드">
+              닭가슴살 샐러드
+            </button>
           </div>
           <div class="menu-item">
-            <button class="toggle-btn">크림 파스타</button>
+            <button class="toggle-btn" data-menu="크림 파스타">
+              크림 파스타
+            </button>
           </div>
         </div>
 
         <!-- 기타 메뉴 -->
         <div class="menu-category others">
-          <h3>기타 메뉴</h3>
+          <h3>메뉴 검색</h3>
           <div id="otherMenuList"></div>
           <div id="input-container">
             <input
               type="text"
               id="newMenuInput"
-              placeholder="새로운 메뉴를 입력하세요"
+              placeholder="검색하고싶은 메뉴를 추가하고 클릭해주세요"
             />
             <button id="addMenuBtn" class="menu-btn">추가</button>
           </div>
           <!-- 입력된 메뉴들이 추가될 곳 -->
         </div>
+        <div class="analyze-section">
+          <button id="Canalyzebutton" class="analyze-btn">분석하기</button>
+        </div>
       </div>
     </div>
 
-    <script>
-      // 버튼 및 모달 요소 가져오기
-      const openSangBtn = document.getElementById("opensang");
-      const openMenuBtn = document.getElementById("openmenu");
-      const openkeyBtn = document.getElementById("openkey");
+    <div id="analysis-result-popup" class="apopup">
+      <div class="apopup-header">
+        <h3>분석 결과</h3>
+        <button class="close-btn" id="closeResultModalBtn">×</button>
+      </div>
+      <div class="apopup-content">
+        <div class="analysis-section">
+          <h4>커피류</h4>
+          <ul id="coffee-results" class="analysis-result"></ul>
+        </div>
+        <div class="analysis-section">
+          <h4>차류</h4>
+          <ul id="tea-results" class="analysis-result"></ul>
+        </div>
+      </div>
+    </div>
 
-      const mapPopup = document.getElementById("map-popup");
-      const menuPopup = document.getElementById("menu-popup");
-      const kPopup = document.getElementById("k-popup");
-
-      const closereModalBtn = document.getElementById("closereModalBtn");
-      const closeMapModalBtn = document.getElementById("closeMapModalBtn");
-      const closeMenuModalBtn = document.getElementById("closeModalBtn");
-      const closekeyModalBtn = document.getElementById("closekeyModalBtn");
-
-      // 버튼 클릭 이벤트로 모달 열기
-      openSangBtn.addEventListener("click", function () {
-        menuPopup.style.display = "none";
-        mapPopup.style.display = "flex";
-        kPopup.style.display = "none";
-        // 지도 모달 열기
-      });
-
-      openMenuBtn.addEventListener("click", function () {
-        mapPopup.style.display = "none";
-        kPopup.style.display = "none";
-        menuPopup.style.display = "flex"; // 메뉴 모달 열기
-      });
-
-      openkeyBtn.addEventListener("click", function () {
-        kPopup.style.display = "flex";
-        mapPopup.style.display = "none";
-        menuPopup.style.display = "none";
-      });
-
-      closereModalBtn.addEventListener("click", function () {
-        document.getElementById("re-popup").style.display = "none";
-      });
-      // 닫기 버튼 클릭 이벤트로 모달 닫기
-      closeMapModalBtn.addEventListener("click", function () {
-        mapPopup.style.display = "none"; // 지도 모달 닫기
-      });
-
-      closeMenuModalBtn.addEventListener("click", function () {
-        menuPopup.style.display = "none"; // 메뉴 모달 닫기
-      });
-
-      closekeyModalBtn.addEventListener("click", function () {
-        kPopup.style.display = "none";
-      });
-    </script>
+    <script></script>
     <!-- JavaScript -->
+
     <script>
       // 지도 검색 이벤트
       document
@@ -363,8 +374,9 @@
                   listItem.onclick = function () {
                     // 목록 클릭 시 해당 위치로 이동하고 마커 추가
                     var coords = new kakao.maps.LatLng(item.y, item.x);
-                    map.setCenter(coords);
-
+                    // map.setCenter(coords);
+                    map.panTo(coords);
+                    map.setLevel(3);
                     // 기존 마커 제거
                     if (currentMarker) {
                       currentMarker.setMap(null);
@@ -395,7 +407,60 @@
             document.getElementById("search-results").innerHTML = "";
           }
         });
+      document
+        .getElementById("search-location2")
+        .addEventListener("input", function () {
+          var keyword = this.value;
 
+          if (keyword.length > 0) {
+            // 주소 검색을 위한 카카오 API 호출
+            geocoder.addressSearch(keyword, function (result, status) {
+              if (status === kakao.maps.services.Status.OK) {
+                // 검색 결과가 있으면 결과 목록 표시
+                var searchResults = document.getElementById("search-results2");
+                searchResults.innerHTML = ""; // 이전 결과 지우기
+
+                result.forEach(function (item) {
+                  var listItem = document.createElement("div");
+                  listItem.textContent = item.address_name;
+                  listItem.style.padding = "5px";
+                  listItem.style.cursor = "pointer";
+                  listItem.onclick = function () {
+                    // 목록 클릭 시 해당 위치로 이동하고 마커 추가
+                    var coords = new kakao.maps.LatLng(item.y, item.x);
+                    map.setCenter(coords);
+                    map.setLevel(3);
+
+                    // 기존 마커 제거
+                    if (currentMarker) {
+                      currentMarker.setMap(null);
+                    }
+
+                    // 새로운 마커 생성
+                    currentMarker = new kakao.maps.Marker({
+                      position: coords,
+                      map: map,
+                    });
+
+                    // 클릭한 위치의 위도, 경도 표시
+                    var message = "위도: " + item.y + ", 경도: " + item.x;
+                    document.getElementById("clickLatlng").innerHTML = message;
+
+                    // 다각형 생성
+                    createCircle(coords);
+
+                    // 결과 목록 숨기기
+                    searchResults.innerHTML = "";
+                  };
+                  searchResults.appendChild(listItem);
+                });
+              }
+            });
+          } else {
+            // 입력값이 없으면 목록 지우기
+            document.getElementById("search-results2").innerHTML = "";
+          }
+        });
       // 검색 버튼 클릭 이벤트
       document
         .getElementById("search-btn")
@@ -440,6 +505,43 @@
             document.getElementById("newMenuInput").value = "";
           }
         });
+      // 선택된 메뉴 저
+
+      // 메뉴 선택 토글
+      document.querySelectorAll(".toggle-btn").forEach((button) => {
+        button.addEventListener("click", () => {
+          const menu = button.getAttribute("data-menu");
+          if (selectedMenus.includes(menu)) {
+            selectedMenus.splice(selectedMenus.indexOf(menu), 1);
+            button.classList.remove("selected");
+          } else {
+            selectedMenus.push(menu);
+            button.classList.add("selected");
+          }
+        });
+      });
+
+      // 팝업 닫기
+      document
+        .getElementById("closeMenuPopup")
+        .addEventListener("click", () => {
+          document.getElementById("menu-popup").style.display = "none";
+        });
+
+      document
+        .getElementById("closeAnalysisPopup")
+        .addEventListener("click", () => {
+          document.getElementById("analysis-popup").style.display = "none";
+        });
+      // 닫기 버튼 이벤트
+      document
+        .getElementById("closeAnalysisBtn")
+        .addEventListener("click", () => {
+          document.getElementById("analysis-popup").style.display = "none";
+        });
+      document.getElementById("closeModalBtn").addEventListener("click", () => {
+        document.getElementById("menu-popup").style.display = "none";
+      });
     </script>
     <script src="/js/keypop.js"></script>
     <!-- 메뉴 선택 JS -->

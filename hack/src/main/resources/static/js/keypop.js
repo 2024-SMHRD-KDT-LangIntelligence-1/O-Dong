@@ -7,6 +7,19 @@ const closeModalBtn = document.getElementById("closeModalBtn");
 const toggleButtons = document.querySelectorAll(".toggle-btn");
 
 // 버튼 클릭 시 선택/해제
+document.querySelectorAll(".menu-category").forEach((category) => {
+  category.addEventListener("click", (event) => {
+    const button = event.target;
+    if (button.classList.contains("toggle-btn")) {
+      // 같은 카테고리 내 다른 버튼 선택 해제
+      category.querySelectorAll(".toggle-btn").forEach((btn) => {
+        btn.classList.remove("selected");
+      });
+      // 클릭한 버튼 선택
+      button.classList.add("selected");
+    }
+  });
+});
 toggleButtons.forEach((button) => {
   button.addEventListener("click", () => {
     button.classList.toggle("selected");
@@ -73,3 +86,98 @@ function moveInputContainerToEnd() {
     otherMenuList.appendChild(inputContainer);
   }
 }
+
+// 선택된 메뉴 데이터
+const selectedMenus = {};
+
+// 메뉴 버튼 클릭 로직
+document.querySelectorAll(".menu-category").forEach((category) => {
+  category.addEventListener("click", (event) => {
+    const button = event.target;
+    if (button.classList.contains("toggle-btn")) {
+      // 같은 카테고리 내 선택된 메뉴 갱신
+      const categoryName = category.querySelector("h3").innerText;
+      category.querySelectorAll(".toggle-btn").forEach((btn) => {
+        btn.classList.remove("selected");
+      });
+      button.classList.add("selected");
+      selectedMenus[categoryName] = button.dataset.menu;
+    }
+  });
+});
+
+// 분석하기 버튼 클릭
+// document.getElementById("Canalyzebutton").addEventListener("click", () => {
+//   const resultsContainer = document.getElementById("analysis-results");
+//   resultsContainer.innerHTML = ""; // 초기화
+
+//   // 예시 데이터베이스
+//   const database = {
+//     커피류: ["아메리카노", "카페라떼", "바닐라 라떼", "콜드브루", "카푸치노"],
+//     차류: ["얼그레이", "녹차", "캐모마일", "페퍼민트", "레몬 티"],
+//     // 다른 카테고리도 추가 가능
+//   };
+
+//   // 결과 생성
+//   Object.entries(selectedMenus).forEach(([category, menu]) => {
+//     const similarMenus = database[category]
+//       ? database[category].filter((item) => item !== menu).slice(0, 5)
+//       : [];
+//     const categoryResult = document.createElement("div");
+//     categoryResult.classList.add("category-result");
+//     categoryResult.innerHTML = `
+//       <h4>${category} (${menu})</h4>
+//       <ul>
+//         ${similarMenus.map((item) => `<li>${item}</li>`).join("")}
+//       </ul>
+//     `;
+//     resultsContainer.appendChild(categoryResult);
+//   });
+
+//   // 분석 결과 팝업 표시
+//   document.getElementById("analysis-result-popup").style.display = "flex";
+// });
+
+// // 분석 결과 팝업 닫기
+// document.getElementById("closeResultModalBtn").addEventListener("click", () => {
+//   document.getElementById("analysis-result-popup").style.display = "none";
+// });
+
+// 분석하기 버튼 클릭 시
+document.getElementById("Canalyzebutton").addEventListener("click", () => {
+  const coffeeResultsContainer = document.getElementById("coffee-results");
+  const teaResultsContainer = document.getElementById("tea-results");
+
+  // 기존 내용 초기화
+  coffeeResultsContainer.innerHTML = "";
+  teaResultsContainer.innerHTML = "";
+
+  // 데이터베이스 예시
+  const database = {
+    커피류: ["아메리카노", "카페라떼", "바닐라 라떼", "콜드브루", "카푸치노"],
+    차류: ["얼그레이", "녹차", "캐모마일", "페퍼민트", "레몬 티"],
+  };
+
+  // 선택된 메뉴와 유사한 메뉴 가져오기
+  Object.entries(selectedMenus).forEach(([category, menu]) => {
+    const similarMenus = database[category]
+      ? database[category].filter((item) => item !== menu).slice(0, 5)
+      : [];
+
+    const resultsContainer =
+      category === "커피류" ? coffeeResultsContainer : teaResultsContainer;
+    similarMenus.forEach((item) => {
+      const listItem = document.createElement("li");
+      listItem.textContent = item;
+      resultsContainer.appendChild(listItem);
+    });
+  });
+
+  // 팝업 표시
+  document.getElementById("analysis-result-popup").style.display = "block";
+});
+
+// 팝업 닫기 버튼
+document.getElementById("closeResultModalBtn").addEventListener("click", () => {
+  document.getElementById("analysis-result-popup").style.display = "none";
+});

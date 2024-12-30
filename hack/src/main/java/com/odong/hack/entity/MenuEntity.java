@@ -18,14 +18,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity // JPA 엔터티로 선언
-@Table(name = "t_menu2")
+@Table(name = "t_menu_slice_1")
 public class MenuEntity {
 
+    // @Column(name = "menu_idx")
+    // private Long menuIdx;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "menu_idx")
-    private Long menuIdx;
-
     @Column(name = "cafe_idx", nullable = false)
     private int cafeIdx;
 
