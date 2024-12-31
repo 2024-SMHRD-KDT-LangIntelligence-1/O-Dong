@@ -121,6 +121,30 @@ function moveInputContainerToEnd() {
 //   document.getElementById("analysis-result-popup").style.display = "none";
 // });
 
+// 선택된 메뉴를 저장할 객체
+const selectedMenus = {};
+
+// 메뉴 버튼 클릭 로직
+document.querySelectorAll(".menu-category").forEach((category) => {
+  const categoryName = category.querySelector("h3").innerText; // 카테고리 이름
+
+  category.addEventListener("click", (event) => {
+    const button = event.target;
+
+    // 버튼 클릭 시 처리
+    if (button.classList.contains("toggle-btn")) {
+      // 같은 카테고리 내 다른 버튼 선택 해제
+      category.querySelectorAll(".toggle-btn").forEach((btn) => {
+        btn.classList.remove("selected");
+      });
+
+      // 클릭한 버튼 선택 및 저장
+      button.classList.add("selected");
+      selectedMenus[categoryName] = button.dataset.menu;
+    }
+  });
+});
+
 // 분석하기 버튼 클릭 시
 // document.getElementById("Canalyzebutton").addEventListener("click", () => {
 //   const coffeeResultsContainer = document.getElementById("coffee-results");

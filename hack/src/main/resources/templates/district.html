@@ -393,7 +393,80 @@
         <!-- 메뉴 카드가 여기에 동적으로 추가됩니다 -->
       </div>
     </div>
+    <script src="/js/keypop.js"></script>
+    <script>
+      // 전역 변수
+      // 지도 검색 이벤트 함수
+      function setupSearch(inputId, resultsId) {
+        const searchInput = document.getElementById(inputId);
+        const searchResults = document.getElementById(resultsId);
 
+        searchInput.addEventListener("input", function () {
+          const keyword = this.value;
+
+          if (keyword.length > 0) {
+            geocoder.addressSearch(keyword, function (result, status) {
+              if (status === kakao.maps.services.Status.OK) {
+                searchResults.innerHTML = "";
+                result.forEach(function (item) {
+                  const listItem = document.createElement("div");
+                  listItem.textContent = item.address_name;
+                  listItem.style.padding = "5px";
+                  listItem.style.cursor = "pointer";
+                  listItem.onclick = function () {
+                    const coords = new kakao.maps.LatLng(item.y, item.x);
+                    map.panTo(coords);
+                    map.setLevel(3);
+
+                    if (currentMarker) {
+                      currentMarker.setMap(null);
+                    }
+                    currentMarker = new kakao.maps.Marker({
+                      position: coords,
+                      map: map,
+                    });
+
+                    const message = `위도: ${item.y}, 경도: ${item.x}`;
+                    document.getElementById("clickLatlng").innerHTML = message;
+
+                    searchResults.innerHTML = "";
+                  };
+                  searchResults.appendChild(listItem);
+                });
+              }
+            });
+          } else {
+            searchResults.innerHTML = "";
+          }
+        });
+      }
+      // 검색 입력 처리 함수 (자동완성)
+      async function handleAutocompleteInput(e, resultsContainerId) {
+        const query = e.target.value;
+        const searchResults = document.getElementById(resultsContainerId);
+
+        if (query.length > 1) {
+          try {
+            const response = await fetch(`/autocomplete?query=${query}`);
+            const suggestions = await response.json();
+            searchResults.innerHTML = ""; // 이전 결과 지우기
+            suggestions.forEach((suggestion) => {
+              const item = document.createElement("div");
+              item.textContent = suggestion;
+              item.classList.add("search-item");
+              searchResults.appendChild(item);
+              item.addEventListener("click", () => {
+                e.target.value = suggestion;
+                searchResults.innerHTML = ""; // 클릭 후 결과 지우기
+              });
+            });
+          } catch (error) {
+            console.error("자동완성 API 호출 실패:", error);
+          }
+        } else {
+          searchResults.innerHTML = ""; // 입력이 짧을 때는 자동완성 숨김
+        }
+      }
 
       // 주소 검색 후 지도 업데이트 함수
       function geocodeAndUpdateMap(addressInputId, map, currentMarker) {
