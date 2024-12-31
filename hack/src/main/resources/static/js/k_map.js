@@ -64,6 +64,19 @@ kakao.maps.event.addListener(map, "click", async function (mouseEvent) {
   searchNearbyCafes(latlng);
   console.log(await getDongNameByCoordinates(lat, lng));
   getTop5MenuByDong(await getDongNameByCoordinates(lat, lng));
+
+  fetch('http://localhost:5000/send-coordinates', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ latitude: lat, longitude: lng })
+  })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Response from Flask:', data);
+      })
+      .catch(error => console.error('Error:', error));
 });
 
 // 위도 경도 기반 동 이름 찾아줌
