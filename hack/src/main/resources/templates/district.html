@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/css/repop.css" />
     <link rel="stylesheet" href="/css/inpop.css" />
     <link rel="stylesheet" href="/css/analpop.css" />
+    <link rel="stylesheet" href="/css/menu_result.css" />
     <style>
       .map_wrap {
         margin-top: 3px;
@@ -44,7 +45,7 @@
           <button id="opensang" class="category-btn" data-category="district">
             상권메뉴비교
           </button>
-          <button id="opensang2" class="category-btn" data-category="district">
+          <button id="opensang2" class="category-btn" data-category="district2">
             상권메뉴비교2
           </button>
           <button id="openkey" class="category-btn" data-category="keyword">
@@ -87,51 +88,90 @@
           </li>
         </ul>
       </div>
+    </div>
 
-      <div id="map-popup" class="spopup" style="display: none">
-        <div class="popup-header">
-          <h3>위치 선택</h3>
-          <button class="close-btn" id="closeMapModalBtn">닫기</button>
-        </div>
-        <div class="popup-body">
-          <!-- 위치 검색 -->
-          <div class="location-search">
-            <label for="search-location">위치 검색</label>
-            <br />
-            <input type="text" id="dsearch-location2" placeholder="주소 검색" />
-            <div id="search-results"></div>
-            <button id="search-btn" class="search-btn">검색</button>
-          </div>
-          <br />
-          <!-- 체크박스 -->
-          <div class="checkbox-group">
-            <label><input type="checkbox" /> 상권별</label>
-            <label><input type="checkbox" /> 공통고려메뉴</label>
-          </div>
-          <br />
-          <!-- 분석하기 버튼 -->
-          <button id="analyze-button" class="analyze-btn">분석하기</button>
-        </div>
+    <!-- DB기반 검색 -->
+    <div id="sang-popup" class="spopup" style="display: none">
+      <div class="popup-header">
+        <h3>위치 선택</h3>
+        <button class="close-btn" id="closeSangModalBtn">닫기</button>
       </div>
-
-      <div id="k-popup" class="ipopup" style="display: none">
-        <div class="popup-header">
-          <h3>키워드 입력</h3>
-          <button class="close-btn" id="closekeyModalBtn">닫기</button>
+      <div class="popup-body">
+        <div class="location-search">
+          <br />
+          <input type="text" id="search-location" placeholder="주소 검색" />
+          <div id="search-results"></div>
+          <button id="search-btn" class="search-btn">검색</button>
         </div>
-        <label for="keyword"></label>
-        <textarea
-          type="text"
-          id="content"
-          name="content"
-          placeholder="원하시는 키워드를 입력하세요"
-          required
-        ></textarea>
-        <button type="button" class="submit-btn" onclick="submitForm()">
-          제출
-        </button>
       </div>
     </div>
+
+    <!-- DB기반 검색인데 2개여야함 ㅎㅎ; -->
+    <div id="map-popup" class="spopup" style="display: none">
+      <div class="popup-header">
+        <h3>위치 선택</h3>
+        <button class="close-btn" id="closeMapModalBtn">닫기</button>
+      </div>
+      <div class="popup-body">
+        <!-- 위치 검색 -->
+        <div class="location-search">
+          <br />
+          <input type="text" id="dsearch-location" placeholder="주소 검색" />
+          <div id="dsearch-results"></div>
+          <button id="search-btn" class="search-btn">검색</button>
+        </div>
+
+        <div class="location-search">
+          <br />
+          <input
+            type="text"
+            id="another-search-location"
+            placeholder="다른 주소 검색"
+          />
+          <div id="another-search-results"></div>
+          <button id="another-search-btn" class="search-btn">검색</button>
+        </div>
+        <br />
+        <!-- 체크박스 -->
+        <!-- <div class="checkbox-group">
+          <label><input type="checkbox" /> 상권별</label>
+          <label><input type="checkbox" /> 공통고려메뉴</label>
+        </div>
+        <br /> -->
+        <!-- 분석하기 버튼 -->
+        <button id="analyze-button" class="analyze-btn">분석하기</button>
+      </div>
+    </div>
+
+    <div id="k-popup" class="ipopup" style="display: none">
+      <div class="popup-header">
+        <h3>키워드 입력</h3>
+        <button class="close-btn" id="closekeyModalBtn">닫기</button>
+      </div>
+
+      <textarea
+        type="text"
+        id="content"
+        name="content"
+        placeholder="원하시는 키워드를 입력하세요(예: 상큼함,달콤함)"
+        required
+      ></textarea>
+      <button type="button" class="submit-btn" onclick="submitForm()">
+        제출
+      </button>
+
+      <div id="keyword-result-popup" class="apopup" style="display: none">
+        <div class="apopup-header">
+          <h3>분석 결과</h3>
+          <button class="close-btn" id="closeKeypopModalBtn">×</button>
+        </div>
+        <div class="apopup-content">
+          <!-- 분석 결과가 여기서 동적으로 표시됨 -->
+          <div id="analysis-result" class="analysis-section"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- 메뉴 선택 모달 -->
     <div id="menu-popup" class="popup" style="display: none">
       <div class="popup-header">
@@ -139,7 +179,6 @@
         <button class="close-btn" id="closeModalBtn">닫기</button>
       </div>
       <div class="location-search">
-        <label for="search-location"></label>
         <br />
         <input type="text" id="search-location2" placeholder="주소 검색" />
         <div id="search-results2"></div>
@@ -323,7 +362,6 @@
             />
             <button id="addMenuBtn" class="menu-btn">추가</button>
           </div>
-          <!-- 입력된 메뉴들이 추가될 곳 -->
         </div>
         <div class="analyze-section">
           <button id="Canalyzebutton" class="analyze-btn">분석하기</button>
@@ -331,10 +369,10 @@
       </div>
     </div>
 
-    <div id="analysis-result-popup" class="apopup">
+    <!-- <div id="analysis-result-popup" class="apopup">
       <div class="apopup-header">
         <h3>분석 결과</h3>
-        <button class="close-btn" id="closeResultModalBtn">×</button>
+        <button class="close-btn" id="closepModalBtn">×</button>
       </div>
       <div class="apopup-content">
         <div class="analysis-section">
@@ -346,12 +384,290 @@
           <ul id="tea-results" class="analysis-result"></ul>
         </div>
       </div>
+    </div> -->
+
+    <!-- 모달 -->
+    <div class="popup-wrapper" id="menuWrapper" style="display: none">
+      <div class="popup-content2">
+        <button id="menuclosePopup" class="close-btn">X</button>
+        <!-- 메뉴 카드가 여기에 동적으로 추가됩니다 -->
+      </div>
     </div>
 
-    <script></script>
+
+      // 주소 검색 후 지도 업데이트 함수
+      function geocodeAndUpdateMap(addressInputId, map, currentMarker) {
+        const address = document.getElementById(addressInputId).value;
+        geocoder.addressSearch(address, function (result, status) {
+          if (status === kakao.maps.services.Status.OK) {
+            const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+            map.setCenter(coords);
+            if (currentMarker) currentMarker.setMap(null);
+            currentMarker = new kakao.maps.Marker({
+              position: coords,
+              map: map,
+            });
+          } else {
+            alert("해당 주소를 찾을 수 없습니다.");
+          }
+        });
+      }
+      setupSearch("search-location2", "search-results2");
+
+      // 모달 열기/닫기 처리 함수
+      function setupModal(openBtnId, modalId, closeBtnId) {
+        const openBtn = document.getElementById(openBtnId);
+        const modal = document.getElementById(modalId);
+        const closeBtn = document.getElementById(closeBtnId);
+
+        if (openBtn && modal && closeBtn) {
+          openBtn.addEventListener("click", () => {
+            closeAllModals(); // 다른 모달 닫기
+            modal.style.display = "flex"; // 현재 모달 열기
+          });
+
+          closeBtn.addEventListener("click", () => {
+            modal.style.display = "none"; // 모달 닫기
+          });
+        } else {
+          console.error(
+            `모달 설정에 필요한 요소가 없습니다: ${openBtnId}, ${modalId}, ${closeBtnId}`
+          );
+        }
+      }
+
+      // 모든 모달 닫기 함수
+      function closeAllModals() {
+        const modals = [
+          "map-popup",
+          "menu-popup",
+          "sang-popup",
+          "k-popup",
+          "analysis-popup",
+        ];
+        modals.forEach((modalId) => {
+          const modal = document.getElementById(modalId);
+          if (modal) modal.style.display = "none";
+        });
+      }
+      document
+        .getElementById("addMenuBtn")
+        .addEventListener("click", function () {
+          var menuName = document.getElementById("newMenuInput").value;
+          if (menuName.trim() !== "") {
+            var newMenuItem = document.createElement("div");
+            newMenuItem.textContent = menuName;
+            document.getElementById("otherMenuList").appendChild(newMenuItem);
+            document.getElementById("newMenuInput").value = "";
+          }
+        });
+      // 검색 버튼 클릭 이벤트 처리 함수
+      function setupSearchButton(
+        searchBtnId,
+        addressInputId,
+        map,
+        currentMarker
+      ) {
+        document.getElementById(searchBtnId).addEventListener("click", () => {
+          geocodeAndUpdateMap(addressInputId, map, currentMarker);
+        });
+      }
+
+      // 검색 입력 필드에 이벤트 리스너 추가
+      const searchInputs = [
+        { inputId: "dsearch-location", resultsId: "dsearch-results" },
+        {
+          inputId: "another-search-location",
+          resultsId: "another-search-results",
+        },
+        { inputId: "search-location", resultsId: "search-results" },
+      ];
+
+      searchInputs.forEach(({ inputId, resultsId }) => {
+        const searchInput = document.getElementById(inputId);
+        searchInput.addEventListener("input", (e) =>
+          handleAutocompleteInput(e, resultsId)
+        );
+      });
+
+      // 모달 이벤트 리스너 초기화
+      document.addEventListener("DOMContentLoaded", function () {
+        setupModal("opensang", "map-popup", "closeMapModalBtn");
+        setupModal("opensang2", "sang-popup", "closeSangModalBtn");
+        setupModal("openmenu", "menu-popup", "closeModalBtn");
+        setupModal("openkey", "k-popup", "closekeyModalBtn");
+        // setupModal("Canalyzebutton", "menuWrapper", "menuClosePopup");
+
+        setupSearchButton("search-btn", "search-location", map, currentMarker);
+        setupSearchButton(
+          "search-btn2",
+          "search-location2",
+          map,
+          currentMarker
+        );
+      });
+
+      // 키워드 검색을 위한 폼 제출 처리 함수
+      async function submitForm() {
+        const keyword = document.getElementById("content").value.trim();
+        if (keyword) {
+          const response = await fetch(`/searchByKeyword?keyword=${keyword}`);
+          const data = await response.json();
+          displayResults(data);
+        } else {
+          alert("키워드를 입력해주세요.");
+        }
+      }
+
+      // 검색 결과를 화면에 표시하는 함수
+      function displayResults(menuItems) {
+        const resultContainer = document.getElementById("analysis-result");
+        resultContainer.innerHTML = ""; // 이전 결과 지우기
+        const itemsToDisplay = menuItems.slice(0, 10);
+        if (itemsToDisplay.length > 0) {
+          itemsToDisplay.forEach((item) => {
+            const resultItem = document.createElement("div");
+            resultItem.classList.add("result-item");
+            resultItem.innerHTML = `<h4>${item.name}</h4><p>${item.info}</p><p><strong>재료:</strong> ${item.ingred}</p>`;
+            resultContainer.appendChild(resultItem);
+          });
+        } else {
+          resultContainer.innerHTML = "<p>검색된 메뉴가 없습니다.</p>";
+        }
+        openResultModal();
+      }
+
+      // 결과 모달 열기 함수
+      function openResultModal() {
+        const modal = document.getElementById("keyword-result-popup");
+        modal.style.display = "block"; // 모달을 보이게 함
+      }
+
+      // 팝업 닫기 이벤트
+      document
+        .getElementById("closeKeypopModalBtn")
+        .addEventListener("click", () => {
+          document.getElementById("keyword-result-popup").style.display =
+            "none";
+        });
+
+      document
+        .getElementById("closepModalBtn")
+        .addEventListener("click", () => {
+          document.getElementById("analysis-result-popup").style.display =
+            "none";
+        });
+    </script>
     <!-- JavaScript -->
 
     <script>
+      const menuData = [
+        {
+          name: "아메리카노",
+          description: "다크 로스팅으로 설탕이 없고 바디가 무거운 음료",
+          imageUrl: "https://via.placeholder.com/200x150",
+        },
+        {
+          name: "카페라떼",
+          description: "부드러운 우유와 에스프레소의 조화",
+          imageUrl: "https://via.placeholder.com/200x150",
+        },
+        {
+          name: "카푸치노",
+          description: "진한 에스프레소와 우유 거품",
+          imageUrl: "https://via.placeholder.com/200x150",
+        },
+        {
+          name: "카푸치노",
+          description: "진한 에스프레소와 우유 거품",
+          imageUrl: "https://via.placeholder.com/200x150",
+        },
+        {
+          name: "카푸치노",
+          description: "진한 에스프레소와 우유 거품",
+          imageUrl: "https://via.placeholder.com/200x150",
+        },
+        {
+          name: "카푸치노",
+          description: "진한 에스프레소와 우유 거품",
+          imageUrl: "https://via.placeholder.com/200x150",
+        },
+        {
+          name: "카푸치노",
+          description: "진한 에스프레소와 우유 거품",
+          imageUrl: "https://via.placeholder.com/200x150",
+        },
+        {
+          name: "카푸치노",
+          description: "진한 에스프레소와 우유 거품",
+          imageUrl: "https://via.placeholder.com/200x150",
+        },
+      ];
+
+      const menuWrapper = document.getElementById("menuWrapper");
+      // const analyzeButton = document.getElementById("Canalyzebutton");
+      // const closePopupButton = document.getElementById("menuclosePopup");
+
+      // // 팝업 열기
+      // analyzeButton.addEventListener("click", () => {
+      //   menuWrapper.style.display = "block"; // 팝업 열기
+      // });
+
+      // // 팝업 닫기
+      // closePopupButton.addEventListener("click", () => {
+      //   menuWrapper.style.display = "none"; // 팝업 닫기
+      // });
+
+      // 메뉴 데이터로 동적으로 카드 생성
+      const popupContent = document.querySelector(".popup-content2");
+      menuData.forEach((item) => {
+        const menuCard = document.createElement("div");
+        menuCard.classList.add("menu-card");
+
+        menuCard.innerHTML = `
+      <img src="${item.imageUrl}" alt="메뉴 사진" />
+      <h3>${item.name}</h3>
+      <p>${item.description}</p>
+      <button class="info-btn">?</button>
+      <div class="detail-popup"></div>
+    `;
+
+        popupContent.appendChild(menuCard);
+      });
+
+      // 각 메뉴 카드에 이벤트 추가
+      document.querySelectorAll(".info-btn").forEach((button) => {
+        button.addEventListener("click", (e) => {
+          const menuCard = e.target.closest(".menu-card");
+          const detailPopup = menuCard.querySelector(".detail-popup");
+
+          detailPopup.innerHTML = `<p><strong>재료:</strong> 이 메뉴는 데이터로 받을거면 안에 뭘 적어야할까요..?</p>`;
+          menuCard.classList.toggle("active");
+        });
+      });
+
+      document
+        .getElementById("Canalyzebutton")
+        .addEventListener("click", () => {
+          const menuWrapper = document.getElementById("menuWrapper");
+
+          if (!menuWrapper) {
+            console.error("menuWrapper 요소를 찾을 수 없습니다.");
+            return;
+          }
+
+          // display 스타일을 토글
+          if (
+            menuWrapper.style.display === "none" ||
+            menuWrapper.style.display === ""
+          ) {
+            menuWrapper.style.display = "flex"; // 팝업 열기
+          } else {
+            menuWrapper.style.display = "none"; // 팝업 닫기
+          }
+        });
+    </script>
+    <!-- <script>
       // 지도 검색 이벤트
       document
         .getElementById("search-location")
@@ -407,6 +723,47 @@
             document.getElementById("search-results").innerHTML = "";
           }
         });
+      const searchInput = document.getElementById("dsearch-location");
+      const searchResults = document.getElementById("dsearch-results");
+
+      searchInput.addEventListener("input", async (e) => {
+        const query = e.target.value;
+        console.log(query);
+        if (query.length > 1) {
+          // 두 글자 이상 입력시 자동완성 시작
+          try {
+            // API 요청
+            const response = await fetch(`/autocomplete?query=${query}`);
+            const suggestions = await response.json();
+
+            // 결과를 화면에 표시
+            searchResults.innerHTML = "";
+            suggestions.forEach((suggestion) => {
+              const item = document.createElement("div");
+              item.textContent = suggestion;
+              item.classList.add("search-item");
+              searchResults.appendChild(item);
+
+              // 클릭 시 검색창에 텍스트 넣기
+              item.addEventListener("click", () => {
+                searchInput.value = suggestion;
+                searchResults.innerHTML = ""; // 클릭 후 결과 지우기
+              });
+            });
+          } catch (error) {
+            console.error("자동완성 API 호출 실패:", error);
+          }
+        } else {
+          searchResults.innerHTML = ""; // 입력이 적을 때는 자동완성 숨김
+        }
+      });
+
+      // 검색 버튼 클릭 시의 동작
+      searchButton.addEventListener("click", () => {
+        const query = searchInput.value;
+        console.log("검색된 주소:", query);
+        // 여기에 검색 결과 처리 로직 추가
+      });
       document
         .getElementById("search-location2")
         .addEventListener("input", function () {
@@ -521,6 +878,80 @@
         });
       });
 
+      // 버튼 및 모달 요소 가져오기
+      const openSangBtn = document.getElementById("opensang");
+      const openSang2Btn = document.getElementById("opensang2");
+      const openMenuBtn = document.getElementById("openmenu");
+      const openkeyBtn = document.getElementById("openkey");
+
+      const mapPopup = document.getElementById("map-popup");
+      const menuPopup = document.getElementById("menu-popup");
+      const kPopup = document.getElementById("k-popup");
+      const sangPopup = document.getElementById("sang-popup");
+
+      const closereModalBtn = document.getElementById("closereModalBtn");
+      const closeMapModalBtn = document.getElementById("closeMapModalBtn");
+      const closeMenuModalBtn = document.getElementById("closeModalBtn");
+      const closekeyModalBtn = document.getElementById("closekeyModalBtn");
+
+      document
+        .getElementById("opensang2")
+        .addEventListener("click", function () {
+          // map-popup2 요소를 찾고, display를 block으로 설정하여 보이게 만듬
+          document.getElementById("map-popup2").style.display = "flex";
+        });
+      // 버튼 클릭 이벤트로 모달 열기
+      openSangBtn.addEventListener("click", function () {
+        menuPopup.style.display = "none";
+        mapPopup.style.display = "flex";
+        kPopup.style.display = "none";
+        sangPopup.style.display = "none";
+        // 지도 모달 열기
+      });
+
+      openSang2Btn.addEventListener("click", function () {
+        menuPopup.style.display = "none";
+        mapPopup.style.display = "none";
+        kPopup.style.display = "none";
+        sangPopup.style.display = "flex";
+      });
+
+      openMenuBtn.addEventListener("click", function () {
+        mapPopup.style.display = "none";
+        kPopup.style.display = "none";
+        menuPopup.style.display = "flex";
+        sangPopup.style.display = "none";
+        console.log(latlng1);
+        map.setCenter(latlng1);
+        console.log(selectedLat, selectedLng);
+        map.setLevel(3);
+      });
+
+      openkeyBtn.addEventListener("click", function () {
+        kPopup.style.display = "flex";
+        mapPopup.style.display = "none";
+        menuPopup.style.display = "none";
+        sangPopup.style.display = "none";
+        // map.setCenter(lat, lng);
+        map.setLevel(3);
+      });
+
+      closereModalBtn.addEventListener("click", function () {
+        document.getElementById("re-popup").style.display = "none";
+      });
+      // 닫기 버튼 클릭 이벤트로 모달 닫기
+      closeMapModalBtn.addEventListener("click", function () {
+        mapPopup.style.display = "none"; // 지도 모달 닫기
+      });
+
+      closeMenuModalBtn.addEventListener("click", function () {
+        menuPopup.style.display = "none"; // 메뉴 모달 닫기
+      });
+
+      closekeyModalBtn.addEventListener("click", function () {
+        kPopup.style.display = "none";
+      });
+
       // 팝업 닫기
       document
         .getElementById("closeMenuPopup")
@@ -542,8 +973,8 @@
       document.getElementById("closeModalBtn").addEventListener("click", () => {
         document.getElementById("menu-popup").style.display = "none";
       });
-    </script>
-    <script src="/js/keypop.js"></script>
+    </script> -->
+
     <!-- 메뉴 선택 JS -->
     <div id="clickLatlng"></div>
 

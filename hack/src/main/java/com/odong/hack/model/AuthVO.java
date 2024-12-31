@@ -15,6 +15,62 @@ public class AuthVO {
     // 회원 비밀번호
     private String user_pw;
 
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
+    public String getUser_pw() {
+        return user_pw;
+    }
+
+    public void setUser_pw(String user_pw) {
+        this.user_pw = user_pw;
+    }
+
+    public String getUser_name() {
+        return user_name;
+    }
+
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
+    }
+
+    public String getUser_phone() {
+        return user_phone;
+    }
+
+    public void setUser_phone(String user_phone) {
+        this.user_phone = user_phone;
+    }
+
+    public String getUser_email() {
+        return user_email;
+    }
+
+    public void setUser_email(String user_email) {
+        this.user_email = user_email;
+    }
+
+    public String getUser_role() {
+        return user_role;
+    }
+
+    public void setUser_role(String user_role) {
+        this.user_role = user_role;
+    }
+
+    public Timestamp getJoin_dt() {
+        return join_dt;
+    }
+
+    public void setJoin_dt(Timestamp join_dt) {
+        this.join_dt = join_dt;
+    }
+
     // 회원 이름
     private String user_name;
 
