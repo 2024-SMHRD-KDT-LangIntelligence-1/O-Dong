@@ -38,12 +38,12 @@ public class FlaskController {
     // 유사 상권 전송 받기
     @PostMapping("/receive-similar-dongs")
     public ResponseEntity<List<String>> receiveSimilarDongs(@RequestBody SimilarDongRequest request) {
-        // System.out.println(request.getSimilarDongs());
-        // return ResponseEntity.ok("응답 성공");
+
+        System.out.println(request);
         List<String> regionNumbers = request.getSimilarDongs(); // 클라이언트에서 받은 법정동 코드 리스트
         // System.out.println(regionNumbers);
         List<String> dongNames = cafeService.getDongNamesByRegionNumbers(regionNumbers); // 동 코드에
-        System.out.println(dongNames);
+        // System.out.println(dongNames);
         return ResponseEntity.ok(dongNames); // 법정동 이름 리스트 응답
     }
 
