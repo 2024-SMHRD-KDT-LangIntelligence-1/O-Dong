@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
@@ -22,7 +24,7 @@ public class FlaskController {
 
     @PostMapping("/send")
     public ResponseEntity<String> sendDataToFlask(@RequestBody String inputData) {
-        String flaskUrl = "http://localhost:5001/process"; // 플라스크 서버 URL
+        String flaskUrl = "http://192.168.219.108:5001/process"; // 플라스크 서버 URL
 
         // 요청 데이터 생성(카카오 api의 위도 경도 json 전송 형식)
         String requestBody = "{ \"input_data\": \"" + inputData + "\" }";
@@ -53,20 +55,28 @@ public class FlaskController {
         try {
             String keyword = requestData.get("keyword");
 
-            String flaskUrl = "http://localhost:5001/analyze-keyword";
+            String flaskUrl = "http://192.168.219.108:5001/analyze-keyword";
             RestTemplate restTemplate = new RestTemplate();
 
             // Flask로 요청 데이터 전송
             ResponseEntity<Map> response = restTemplate.postForEntity(flaskUrl, requestData, Map.class);
-
+            if (response.getStatusCode() != HttpStatus.OK) {
+                throw new RuntimeException("Flask 서버에서 응답을 받지 못했습니다.");
+            }
             // Flask에서 받은 결과를 클라이언트에 그대로 전달
             Map<String, Object> flaskResponse = response.getBody();
 
             // 응답 반환
             return ResponseEntity.ok(flaskResponse);
 
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            // HTTP 오류 처리
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", "플라스크 서버와의 HTTP 오류 발생");
+            errorResponse.put("details", e.getMessage());
+            return ResponseEntity.status(e.getStatusCode()).body(errorResponse);
         } catch (Exception e) {
-            // 예외 처리
+            // 기타 예외 처리
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("error", "플라스크 서버에 연결하지 못했습니다.");
             errorResponse.put("details", e.getMessage());
@@ -78,7 +88,7 @@ public class FlaskController {
     @PostMapping("/receive-keyword-menu")
     public ResponseEntity<Map<String, Object>> receiveKeywordMenu(@RequestBody Map<String, Object> requestData) {
         String status = (String) requestData.get("status");
-        if(status.equals("success")) {
+        if (status.equals("success")) {
             String keyword = (String) requestData.get("keyword");
             List<Map<String, Object>> recommanded = (List<Map<String, Object>>) requestData.get("recommanded");
 
@@ -90,7 +100,7 @@ public class FlaskController {
             response.put("status", "success");
             response.put("message", "데이터 전송 완료");
             return ResponseEntity.ok(response);
-        } else{
+        } else {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("status", status);
             errorResponse.put("message", "데이터 전송 실패");
@@ -102,7 +112,7 @@ public class FlaskController {
     // 유사 메뉴 분석을 위한 메뉴 전송
     @PostMapping("/send-menu")
     public ResponseEntity<Map<String, Object>> sendMenu(@RequestBody Map<String, String> requestData) {
-        try{
+        try {
             String menu = (String) requestData.get("menu");
 
             String flaskUrl = "http://localhost:5001/analyze-menu";
@@ -114,7 +124,7 @@ public class FlaskController {
             Map<String, Object> flaskResponse = response.getBody();
             return ResponseEntity.ok(flaskResponse);
 
-        }catch(Exception e){
+        } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("status", "플라스크 서버에 연결하지 못했습니다.");
             errorResponse.put("message", e.getMessage());
@@ -126,28 +136,28 @@ public class FlaskController {
     @PostMapping("/receive-similar-menus")
     public ResponseEntity<Map<String, Object>> receiveSimilarMenus(@RequestBody Map<String, Object> requestData) {
         String status = (String) requestData.get("status");
-        if(status.equals("success")) {
+        if (status.equals("success")) {
             String menu = (String) requestData.get("menu");
-            List<String> similarMenus = (List<String>)requestData.get("similarMenus");
+            List<String> similarMenus = (List<String>) requestData.get("similarMenus");
 
-            System.out.println("입력 메뉴: "+ menu);
-            System.out.println("유사 메뉴: "+similarMenus);
+            System.out.println("입력 메뉴: " + menu);
+            System.out.println("유사 메뉴: " + similarMenus);
 
             Map<String, Object> response = new HashMap<>();
             response.put("status", "success");
             response.put("message", "데이터 전송 성공");
             return ResponseEntity.ok(response);
-        }else{
+        } else {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("status", status);
-            errorResponse.put("message","데이터 전송 실패");
+            errorResponse.put("message", "데이터 전송 실패");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
 
     @PostMapping("/send-sanggueon-gongtong")
     public ResponseEntity<Map<String, Object>> sendSanggueonGongtong(@RequestBody Map<String, Object> requestData) {
-        try{
+        try {
             String sang1 = (String) requestData.get("sang1");
             String sang2 = (String) requestData.get("sang2");
 
@@ -157,7 +167,7 @@ public class FlaskController {
             ResponseEntity<Map> response = restTemplate.postForEntity(flaskUrl, requestData, Map.class);
             Map<String, Object> flaskResponse = response.getBody();
             return ResponseEntity.ok(flaskResponse);
-        }catch(Exception e){
+        } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("status", "플라스크 서버에 연결하지 못했습니다.");
             errorResponse.put("message", e.getMessage());
@@ -168,19 +178,19 @@ public class FlaskController {
     @PostMapping("/receive-sanggueon-gongtong")
     public ResponseEntity<Map<String, Object>> receiveSanggueonGongtong(@RequestBody Map<String, Object> requestData) {
         String status = (String) requestData.get("status");
-        if(status.equals("success")) {
+        if (status.equals("success")) {
             String sang1 = (String) requestData.get("sang1");
             String sang2 = (String) requestData.get("sang2");
 
-            List<String> gongtongMenus = (List<String>)requestData.get("gongtongMenus");
-            System.out.println("상권1 :"+sang1+" / 상권2 :"+sang2);
-            System.out.println("공통 메뉴: "+gongtongMenus);
+            List<String> gongtongMenus = (List<String>) requestData.get("gongtongMenus");
+            System.out.println("상권1 :" + sang1 + " / 상권2 :" + sang2);
+            System.out.println("공통 메뉴: " + gongtongMenus);
 
             Map<String, Object> response = new HashMap<>();
             response.put("status", "success");
             response.put("message", "데이터 전송 성공");
             return ResponseEntity.ok(response);
-        }else{
+        } else {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("status", status);
             errorResponse.put("message", "데이터 전송 실패");

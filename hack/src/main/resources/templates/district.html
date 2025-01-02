@@ -732,6 +732,61 @@
           alert("키워드 분석 중 문제가 발생했습니다.");
         }
       }
+      // async function submitForm() {
+      //   try {
+      //     const keyword = document.getElementById("content").value.trim();
+      //     if (keyword) {
+      //       // 첫 번째 요청: 서버로 키워드 전송
+      //       const response = await fetch(
+      //         `http://192.168.219.108:5001/analyze-keyword`,
+      //         {
+      //           method: "POST",
+      //           headers: {
+      //             "Content-Type": "application/json",
+      //           },
+      //           body: JSON.stringify({ keyword: keyword }),
+      //         }
+      //       );
+
+      //       if (!response.ok) {
+      //         throw new Error("서버 응답 오류");
+      //       }
+
+      //       // Flask 서버에서 받은 응답 처리
+      //       const data = await response.json();
+
+      //       // 'recommanded'가 배열이어야 하는데 문자열이 오는 경우를 처리
+      //       const recommanded = Array.isArray(data.recommanded)
+      //         ? data.recommanded
+      //         : [];
+
+      //       // 두 번째 요청: `/receive-keyword-menu`로 받은 데이터를 서버에 전송
+      //       const secondResponse = await fetch("/api/receive-keyword-menu", {
+      //         method: "POST",
+      //         headers: {
+      //           "Content-Type": "application/json",
+      //         },
+      //         body: JSON.stringify({
+      //           status: "success", // 두 번째 요청은 성공 상태
+      //           keyword: keyword, // 첫 번째 요청에서 보낸 동일한 키워드 사용
+      //           recommanded: recommanded, // 추천 메뉴 리스트 (빈 배열로 설정)
+      //         }),
+      //       });
+
+      //       if (!secondResponse.ok) {
+      //         throw new Error("두 번째 요청에서 오류 발생");
+      //       }
+
+      //       const secondData = await secondResponse.json();
+      //       console.log("두 번째 응답:", secondData.message); // 두 번째 응답 메시지 출력
+      //     } else {
+      //       alert("키워드를 입력해주세요.");
+      //     }
+      //   } catch (error) {
+      //     console.error("Error:", error);
+      //     alert("키워드 분석 중 문제가 발생했습니다.");
+      //   }
+      // }
 
       // 검색 결과를 화면에 표시하는 함수
       function displayResults(menuItems) {
@@ -892,17 +947,21 @@
       document
         .getElementById("Canalyzebutton")
         .addEventListener("click", () => {
-          const selectedMenus = document.querySelectorAll(".toggle-btn.selected");
+          const selectedMenus = document.querySelectorAll(
+            ".toggle-btn.selected"
+          );
 
-          async function sendMenus(){
-            for(let i =0; i<selectedMenus.length;i++){
-              try{
+          async function sendMenus() {
+            for (let i = 0; i < selectedMenus.length; i++) {
+              try {
                 const response = await fetch(`/api/send-menu`, {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
                   },
-                  body: JSON.stringify({menu: selectedMenus.item(i).innerText }),
+                  body: JSON.stringify({
+                    menu: selectedMenus.item(i).innerText,
+                  }),
                 });
                 console.log(selectedMenus.item(i).innerText);
                 if (!response.ok) {
@@ -910,9 +969,15 @@
                 }
 
                 const data = response.json();
-                console.log(`Response for menu ${selectedMenus.item(i).innerText}:`, data);
-              }catch (error) {
-                console.error(`Error sending menu ${selectedMenus.item(i).innerText}:`, error);
+                console.log(
+                  `Response for menu ${selectedMenus.item(i).innerText}:`,
+                  data
+                );
+              } catch (error) {
+                console.error(
+                  `Error sending menu ${selectedMenus.item(i).innerText}:`,
+                  error
+                );
               }
             }
           }
