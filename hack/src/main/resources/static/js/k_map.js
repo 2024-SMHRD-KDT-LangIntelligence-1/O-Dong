@@ -242,3 +242,8 @@ function createCircle(latlng) {
 // DB기반 검색 id : search-location,dsearch-location
 
 // 맵 api기반 검색 id : search-location2
+var closeModalBtn = document.getElementById("closereModalBtn");
+
+closeModalBtn.onclick = function () {
+  document.getElementById("re-popup").style.display = "none";
+};

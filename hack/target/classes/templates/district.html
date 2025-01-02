@@ -67,24 +67,24 @@
 
         <ul class="top5-list" id="top5MenuList">
           <li>
-            <span class="rank">1</span>
-            <span class="category">아메리카노</span>
+            <span class="rank"></span>
+            <span class="category"></span>
           </li>
           <li>
-            <span class="rank">2</span>
-            <span class="category">바닐라라떼</span>
+            <span class="rank"></span>
+            <span class="category"></span>
           </li>
           <li>
-            <span class="rank">3</span>
-            <span class="category">카페라떼</span>
+            <span class="rank"></span>
+            <span class="category"></span>
           </li>
           <li>
-            <span class="rank">4</span>
-            <span class="category">그저 커피</span>
+            <span class="rank"></span>
+            <span class="category"></span>
           </li>
           <li>
-            <span class="rank">5</span>
-            <span class="category">호날두</span>
+            <span class="rank"></span>
+            <span class="category"></span>
           </li>
         </ul>
       </div>
@@ -496,6 +496,7 @@
 
             // 지도의 중심을 새 좌표로 설정
             map.setCenter(coords);
+            map.setLevel(12);
 
             // 기존 마커가 있으면 지도에서 제거
             if (currentMarker) currentMarker.setMap(null);
@@ -510,25 +511,98 @@
             const lat = result[0].y;
             const lng = result[0].x;
 
+            // 첫 번째 요청: 좌표 데이터를 Flask 서버로 전송
             fetch("http://192.168.219.108:5001/send-coordinates", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ latitude: lat, longitude: lng }),
+              body: JSON.stringify({ latitude: lat, longitude: lng }), // 좌표 데이터
             })
-              // .then((response) => response.json())
-              // .then((data) => {
-              //   console.log("Response from Flask:", data);
-              // })
-              // .catch((error) => console.error("Error:", error));
               .then((response) => {
-                return response.text(); // JSON이 아닌 HTML일 수도 있으므로 text로 먼저 받음
+                if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json(); // JSON 응답 처리
               })
               .then((data) => {
-                console.log("Response from Flask:", data); // 받은 응답을 출력
+                console.log("Response from Flask (coordinates):", data); // 여기서 `data` 값을 확인
+                if (!data || !data.yusadongs) {
+                  throw new Error("No 'similarDongs' in the response.");
+                }
+
+                // 두 번째 요청: 첫 번째 요청에서 받은 데이터를 기반으로 요청 생성
+                return fetch("/api/receive-similar-dongs", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    similarDongs: data.yusadongs, // 첫 번째 요청 응답에서 받은 데이터 사용
+                  }),
+                });
+              })
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json(); // 두 번째 응답을 JSON 형식으로 처리
+              })
+              .then((data) => {
+                console.log("Received dong names:", data); // 응답 데이터 출력
+                // 받은 동 이름 데이터로 마커 추가
+                var dongList = data.map(function (dong) {
+                  return { name: dong }; // 동 이름만 저장
+                });
+
+                var markerClusterer = new kakao.maps.MarkerClusterer({
+                  map: map, // 클러스터러가 적용될 지도
+                  averageCenter: true, // 클러스터의 중심을 평균 위치로 설정
+                  minLevel: 10, // 최소 클러스터링 레벨 (여기서는 10 이하에서만 클러스터링)
+                });
+                // 동 리스트에 대한 마커 생성 코드
+                dongList.forEach(function (dong) {
+                  // console.log("Searching address for:", dong.name);
+                  // 주소 검색 후 마커 찍기 코드
+                  geocoder.addressSearch(dong.name, function (result, status) {
+                    if (status === kakao.maps.services.Status.OK) {
+                      var coords = new kakao.maps.LatLng(
+                        result[0].y,
+                        result[0].x
+                      );
+
+                      var marker = new kakao.maps.Marker({
+                        position: coords,
+                        map: map,
+                      });
+
+                      var infowindow = new kakao.maps.InfoWindow({
+                        content: `<div style="padding:5px; border-radius:8px; color:#333;">${dong.name}</div>`,
+                      });
+
+                      kakao.maps.event.addListener(
+                        marker,
+                        "click",
+                        function () {
+                          infowindow.open(map, marker);
+                        }
+                      );
+                      // infowindow.open(map, marker);
+                      markerClusterer.addMarkers([marker]);
+                    } else {
+                      console.error("주소를 찾을 수 없습니다:", dong.name);
+                    }
+                  });
+                });
               })
               .catch((error) => console.error("Error:", error));
+            // .then((response) => {
+            //   return response.text(); // JSON이 아닌 HTML일 수도 있으므로 text로 먼저 받음
+            // })
+            // .then((data) => {
+            //   console.log("Response from Flask:", data); // 받은 응답을 출력
+            // })
+            // .catch((error) => console.error("Error:", error));
           } else {
             alert("해당 주소를 찾을 수 없습니다.");
           }
@@ -1118,7 +1192,7 @@
 
     <script
       type="text/javascript"
-      src="//dapi.kakao.com/v2/maps/sdk.js?appkey=5ee6076af595f4d8884d46e046f17e2e&libraries=services"
+      src="//dapi.kakao.com/v2/maps/sdk.js?appkey=5ee6076af595f4d8884d46e046f17e2e&libraries=services&libraries=services,clusterer"
     ></script>
     <script src="https://use.fontawesome.com/releases/v5.2.0/js/all.js"></script>
     <script src="/js/k_map.js"></script>
