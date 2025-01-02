@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.odong.hack.entity.RegionEntity;
 
-public interface RegionRepo extends JpaRepository<RegionEntity, Integer> {
+public interface    RegionRepo extends JpaRepository<RegionEntity, Integer> {
 
     @Query("SELECT DISTINCT m.dong FROM RegionEntity m WHERE m.dong = :dong")
     List<String> findExactDong(String dong);

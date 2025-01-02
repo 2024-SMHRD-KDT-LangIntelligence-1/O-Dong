@@ -510,7 +510,7 @@
             const lat = result[0].y;
             const lng = result[0].x;
 
-            fetch("http://192.168.219.108:5001/send-coordinates", {
+            fetch("http://localhost:5001/send-coordinates", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -787,6 +787,33 @@
       document
         .getElementById("Canalyzebutton")
         .addEventListener("click", () => {
+          const selectedMenus = document.querySelectorAll(".toggle-btn.selected");
+
+          async function sendMenus(){
+            for(let i =0; i<selectedMenus.length;i++){
+              try{
+                const response = await fetch(`/api/send-menu`, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({menu: selectedMenus.item(i).innerText }),
+                });
+                console.log(selectedMenus.item(i).innerText);
+                if (!response.ok) {
+                  throw new Error("Error in server response");
+                }
+
+                const data = response.json();
+                console.log(`Response for menu ${selectedMenus.item(i).innerText}:`, data);
+              }catch (error) {
+                console.error(`Error sending menu ${selectedMenus.item(i).innerText}:`, error);
+              }
+            }
+          }
+          sendMenus();
+
+
           const menuWrapper = document.getElementById("menuWrapper");
 
           if (!menuWrapper) {
