@@ -657,6 +657,8 @@
             document.getElementById("newMenuInput").value = "";
           }
         });
+
+
       // 검색 버튼 클릭 이벤트 처리 함수
       function setupSearchButton(
         searchBtnId,
@@ -857,6 +859,35 @@
           menuCard.classList.toggle("active");
         });
       });
+
+      document
+              .querySelector("#analyze-button")
+              .addEventListener("click",()=>{
+                const sang1 = document.querySelector("#dsearch-location").value;
+                const sang2 = document.querySelector("#another-search-location").value;
+
+                async function sendGongTong(){
+                  try{
+                    const response = await fetch("/api/send-sanggueon-gongtong",{
+                      method: "POST",
+                      headers:{
+                        "Content-Type":"application/json",
+                      },
+                      body:JSON.stringify({sang1:sang1,sang2:sang2}),
+                    });
+                    console.log(sang1+" / "+sang2);
+
+                    if(!response.ok){
+                      throw new Error("Error in server response")
+                    }
+                    const data = response.json();
+                    console.log(`Response for 상권 ${sang1}:`, data);
+                  }catch (error) {
+                    console.error(`Error sending 상권 ${sang1}:`, error);
+                  }
+                }
+                sendGongTong();
+              })
 
       document
         .getElementById("Canalyzebutton")

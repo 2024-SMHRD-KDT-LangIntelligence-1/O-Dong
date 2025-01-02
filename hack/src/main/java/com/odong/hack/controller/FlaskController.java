@@ -53,7 +53,7 @@ public class FlaskController {
         try {
             String keyword = requestData.get("keyword");
 
-            String flaskUrl = "http://127.0.0.1:5001/analyze-keyword";
+            String flaskUrl = "http://localhost:5001/analyze-keyword";
             RestTemplate restTemplate = new RestTemplate();
 
             // Flask로 요청 데이터 전송
@@ -105,7 +105,7 @@ public class FlaskController {
         try{
             String menu = (String) requestData.get("menu");
 
-            String flaskUrl = "http://127.0.0.1:5001/analyze-menu";
+            String flaskUrl = "http://localhost:5001/analyze-menu";
             RestTemplate restTemplate = new RestTemplate();
 
             // Flask로 요청 데이터 전송
@@ -141,6 +141,49 @@ public class FlaskController {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("status", status);
             errorResponse.put("message","데이터 전송 실패");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+    @PostMapping("/send-sanggueon-gongtong")
+    public ResponseEntity<Map<String, Object>> sendSanggueonGongtong(@RequestBody Map<String, Object> requestData) {
+        try{
+            String sang1 = (String) requestData.get("sang1");
+            String sang2 = (String) requestData.get("sang2");
+
+            String flaskUrl = "http://localhost:5001/sanggueon-gongtong";
+            RestTemplate restTemplate = new RestTemplate();
+
+            ResponseEntity<Map> response = restTemplate.postForEntity(flaskUrl, requestData, Map.class);
+            Map<String, Object> flaskResponse = response.getBody();
+            return ResponseEntity.ok(flaskResponse);
+        }catch(Exception e){
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("status", "플라스크 서버에 연결하지 못했습니다.");
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+    @PostMapping("/receive-sanggueon-gongtong")
+    public ResponseEntity<Map<String, Object>> receiveSanggueonGongtong(@RequestBody Map<String, Object> requestData) {
+        String status = (String) requestData.get("status");
+        if(status.equals("success")) {
+            String sang1 = (String) requestData.get("sang1");
+            String sang2 = (String) requestData.get("sang2");
+
+            List<String> gongtongMenus = (List<String>)requestData.get("gongtongMenus");
+            System.out.println("상권1 :"+sang1+" / 상권2 :"+sang2);
+            System.out.println("공통 메뉴: "+gongtongMenus);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", "success");
+            response.put("message", "데이터 전송 성공");
+            return ResponseEntity.ok(response);
+        }else{
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("status", status);
+            errorResponse.put("message", "데이터 전송 실패");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
