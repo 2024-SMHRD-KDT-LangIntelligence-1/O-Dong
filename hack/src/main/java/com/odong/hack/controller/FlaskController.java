@@ -1,4 +1,5 @@
 package com.odong.hack.controller;
+
 import com.odong.hack.model.SimilarDongRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class FlaskController {
 
     // 유사 상권 전송 받기
     @PostMapping("/receive-similar-dongs")
-    public ResponseEntity<String> receiveSimilarDongs(@RequestBody SimilarDongRequest request){
+    public ResponseEntity<String> receiveSimilarDongs(@RequestBody SimilarDongRequest request) {
         System.out.print(request.getSimilarDongs());
         return ResponseEntity.ok("응답 성공");
     }
@@ -66,18 +67,17 @@ public class FlaskController {
     @PostMapping("/receive-keyword-menu")
     public ResponseEntity<Map<String, Object>> receiveKeywordMenu(@RequestBody Map<String, Object> request) {
         String keyword = (String) request.get("keyword");
-        List<Map<String, Object>>recommanded = (List<Map<String, Object>>) request.get("recommanded");
+        List<Map<String, Object>> recommanded = (List<Map<String, Object>>) request.get("recommanded");
 
-        System.out.println("입력 키워드: "+keyword);
-        System.out.println("추천 메뉴 리스트: "+ recommanded);
+        System.out.println("입력 키워드: " + keyword);
+        System.out.println("추천 메뉴 리스트: " + recommanded);
 
-        //응답 성공
+        // 응답 성공
         Map<String, Object> response = new HashMap<>();
         response.put("success", "success");
         response.put("message", "데이터 전송 완료");
         return ResponseEntity.ok(response);
     }
-
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception e) {

@@ -46,11 +46,20 @@
   margin: 10px 0;
   font-size: 18px;
 }
-
 .menu-card p {
   color: #555;
   font-size: 14px;
+  height: 50px; /* 고정 높이 */
+  overflow-y: auto; /* 세로 스크롤 활성화 */
+  white-space: normal; /* 여러 줄 허용 */
 }
+
+/* .menu-card p {
+  color: #555;
+  font-size: 14px;
+  overflow-x: auto;
+  white-space: normal;
+} */
 
 .info-btn {
   position: absolute;

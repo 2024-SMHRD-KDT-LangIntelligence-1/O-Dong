@@ -6,8 +6,8 @@ var latlng1 = null; // 클릭한 위치의 경도
 
 var mapContainer = document.getElementById("map"),
   mapOption = {
-    center: new kakao.maps.LatLng(36.39669464815417, 127.85429920416979), // 초기 지도 중심좌표
-    level: 12, // 초기 확대 레벨
+    center: new kakao.maps.LatLng(35.1505169672014, 126.91611949915585), // 초기 지도 중심좌표
+    level: 3, // 초기 확대 레벨
   };
 
 map = new kakao.maps.Map(mapContainer, mapOption); // 지도 객체 생성
@@ -65,18 +65,18 @@ kakao.maps.event.addListener(map, "click", async function (mouseEvent) {
   console.log(await getDongNameByCoordinates(lat, lng));
   getTop5MenuByDong(await getDongNameByCoordinates(lat, lng));
 
-  fetch('http://localhost:5000/send-coordinates', {
-    method: 'POST',
+  fetch("http://localhost:5000/send-coordinates", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify({ latitude: lat, longitude: lng })
+    body: JSON.stringify({ latitude: lat, longitude: lng }),
   })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Response from Flask:', data);
-      })
-      .catch(error => console.error('Error:', error));
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Response from Flask:", data);
+    })
+    .catch((error) => console.error("Error:", error));
 });
 
 // 위도 경도 기반 동 이름 찾아줌
