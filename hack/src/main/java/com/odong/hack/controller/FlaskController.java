@@ -1,6 +1,9 @@
 package com.odong.hack.controller;
 
 import com.odong.hack.model.SimilarDongRequest;
+import com.odong.hack.service.CafeService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +17,12 @@ import java.util.Map;
 @RequestMapping("/api")
 public class FlaskController {
 
+    @Autowired
+    private CafeService cafeService;
+
     @PostMapping("/send")
     public ResponseEntity<String> sendDataToFlask(@RequestBody String inputData) {
-        String flaskUrl = "http://localhost:5000/process"; // 플라스크 서버 URL
+        String flaskUrl = "http://192.168.219.108:5001/process"; // 플라스크 서버 URL
 
         // 요청 데이터 생성(카카오 api의 위도 경도 json 전송 형식)
         String requestBody = "{ \"input_data\": \"" + inputData + "\" }";
@@ -31,9 +37,14 @@ public class FlaskController {
 
     // 유사 상권 전송 받기
     @PostMapping("/receive-similar-dongs")
-    public ResponseEntity<String> receiveSimilarDongs(@RequestBody SimilarDongRequest request) {
-        System.out.print(request.getSimilarDongs());
-        return ResponseEntity.ok("응답 성공");
+    public ResponseEntity<List<String>> receiveSimilarDongs(@RequestBody SimilarDongRequest request) {
+        // System.out.println(request.getSimilarDongs());
+        // return ResponseEntity.ok("응답 성공");
+        List<String> regionNumbers = request.getSimilarDongs(); // 클라이언트에서 받은 법정동 코드 리스트
+        // System.out.println(regionNumbers);
+        List<String> dongNames = cafeService.getDongNamesByRegionNumbers(regionNumbers); // 동 코드에
+        System.out.println(dongNames);
+        return ResponseEntity.ok(dongNames); // 법정동 이름 리스트 응답
     }
 
     // 뷰로부터 전달받은 키워드 플라스크로 전송
@@ -42,7 +53,7 @@ public class FlaskController {
         try {
             String keyword = requestData.get("keyword");
 
-            String flaskUrl = "http://localhost:5000/analyze-keyword";
+            String flaskUrl = "http://127.0.0.1/:5001/analyze-keyword";
             RestTemplate restTemplate = new RestTemplate();
 
             // Flask로 요청 데이터 전송

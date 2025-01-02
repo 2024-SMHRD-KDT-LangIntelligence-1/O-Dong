@@ -388,11 +388,8 @@
 
     <!-- 모달 -->
     <div class="popup-wrapper" id="menuWrapper" style="display: none">
-      <div class="popup-header">
-        <h3>유사 메뉴 비교</h3>
-        <button id="menuclosePopup" class="close-btn">X</button>
-      </div>
       <div class="popup-content2">
+        <button id="menuclosePopup" class="close-btn">X</button>
         <!-- 메뉴 카드가 여기에 동적으로 추가됩니다 -->
       </div>
     </div>
@@ -472,17 +469,66 @@
       }
 
       // 주소 검색 후 지도 업데이트 함수
+      // function geocodeAndUpdateMap(addressInputId, map, currentMarker) {
+      //   const address = document.getElementById(addressInputId).value;
+      //   geocoder.addressSearch(address, function (result, status) {
+      //     if (status === kakao.maps.services.Status.OK) {
+      //       const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+      //       map.setCenter(coords);
+      //       if (currentMarker) currentMarker.setMap(null);
+      //       currentMarker = new kakao.maps.Marker({
+      //         position: coords,
+      //         map: map,
+      //       });
+      //     } else {
+      //       alert("해당 주소를 찾을 수 없습니다.");
+      //     }
+      //   });
+      // }
       function geocodeAndUpdateMap(addressInputId, map, currentMarker) {
         const address = document.getElementById(addressInputId).value;
+
+        // 주소 검색
         geocoder.addressSearch(address, function (result, status) {
           if (status === kakao.maps.services.Status.OK) {
+            // 검색된 결과로 새로운 좌표를 설정
             const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+            // 지도의 중심을 새 좌표로 설정
             map.setCenter(coords);
+
+            // 기존 마커가 있으면 지도에서 제거
             if (currentMarker) currentMarker.setMap(null);
+
+            // 새 마커 생성
             currentMarker = new kakao.maps.Marker({
               position: coords,
               map: map,
             });
+
+            // 위도와 경도를 서버에 보내기 위한 fetch 요청
+            const lat = result[0].y;
+            const lng = result[0].x;
+
+            fetch("http://192.168.219.108:5001/send-coordinates", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ latitude: lat, longitude: lng }),
+            })
+              // .then((response) => response.json())
+              // .then((data) => {
+              //   console.log("Response from Flask:", data);
+              // })
+              // .catch((error) => console.error("Error:", error));
+              .then((response) => {
+                return response.text(); // JSON이 아닌 HTML일 수도 있으므로 text로 먼저 받음
+              })
+              .then((data) => {
+                console.log("Response from Flask:", data); // 받은 응답을 출력
+              })
+              .catch((error) => console.error("Error:", error));
           } else {
             alert("해당 주소를 찾을 수 없습니다.");
           }
@@ -589,11 +635,11 @@
           const keyword = document.getElementById("content").value.trim();
           if (keyword) {
             const response = await fetch(`/api/send-keyword`, {
-              method : "POST",
-              headers : {
+              method: "POST",
+              headers: {
                 "Content-Type": "application/json",
               },
-              body : JSON.stringify({keyword: keyword}),
+              body: JSON.stringify({ keyword: keyword }),
             });
 
             if (!response.ok) {
@@ -602,15 +648,13 @@
 
             const data = await response.json();
             // displayResults(data);
-          }else
-          {
+          } else {
             alert("키워드를 입력해주세요.");
           }
-        }catch(error) {
+        } catch (error) {
           console.error("Error:", error);
           alert("키워드 분석 중 문제가 발생했습니다.");
         }
-
       }
 
       // 검색 결과를 화면에 표시하는 함수
@@ -658,8 +702,7 @@
       const menuData = [
         {
           name: "아메리카노",
-          description:
-            "다크 로스팅으로 바디가 무거운 음료 근데 길어지면 어떻게 될까요 ",
+          description: "다크 로스팅으로 설탕이 없고 바디가 무거운 음료",
           imageUrl: "https://via.placeholder.com/200x150",
         },
         {
