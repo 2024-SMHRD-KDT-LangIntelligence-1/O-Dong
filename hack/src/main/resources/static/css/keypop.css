@@ -258,3 +258,32 @@ body {
 #otherMenuList .toggle-btn:hover {
   background-color: #e0e0e0;
 }
+
+.explain-btn {
+  position: absolute;
+  top: 28px;
+  left: 120px;
+  background-color: #786fa6;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 50%;
+  font-size: 18px;
+}
+
+.tooltip {
+  display: none; /* 기본적으로 숨김 */
+  position: absolute;
+  top: 70px; /* 버튼 아래에 툴팁 배치 */
+  left: 130px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.explain-btn:hover + .tooltip {
+  display: block; /* 호버 시 툴팁 표시 */
+}

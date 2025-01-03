@@ -87,6 +87,8 @@ public class FlaskController {
     // 키워드 추천 메뉴 받기
     @PostMapping("/receive-keyword-menu")
     public ResponseEntity<Map<String, Object>> receiveKeywordMenu(@RequestBody Map<String, Object> requestData) {
+        System.out.println("Received request data: " + requestData); // 요청 데이터 출력
+
         String status = (String) requestData.get("status");
         if (status.equals("success")) {
             String keyword = (String) requestData.get("keyword");
@@ -94,16 +96,19 @@ public class FlaskController {
             List<Map<String, Object>> menuInfo = (List<Map<String, Object>>) requestData.get("menuInfo");
             List<Map<String, Object>> menuIngred = (List<Map<String, Object>>) requestData.get("menuIngred");
 
-            System.out.println("입력 키워드: " + keyword);
-            System.out.println("추천 메뉴 리스트: " + recommanded);
-            System.out.println("추천 메뉴 설명: " + menuInfo);
-            System.out.println("추천 메뉴 재료: " + menuIngred);
+            // 출력으로 받은 데이터 확인
+            System.out.println("Keyword: " + keyword);
+            System.out.println("Recommended: " + recommanded);
+            System.out.println("Menu Info: " + menuInfo);
+            System.out.println("Menu Ingredients: " + menuIngred);
 
-            // 응답 성공
             Map<String, Object> response = new HashMap<>();
             response.put("status", "success");
+            response.put("keyword", keyword);
             response.put("message", "데이터 전송 완료");
             response.put("recommanded", recommanded);
+            response.put("menuInfo", menuInfo);
+            response.put("menuIngred", menuIngred);
             return ResponseEntity.ok(response);
         } else {
             Map<String, Object> errorResponse = new HashMap<>();
@@ -111,7 +116,6 @@ public class FlaskController {
             errorResponse.put("message", "데이터 전송 실패");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
-
     }
 
     // 유사 메뉴 분석을 위한 메뉴 전송
@@ -174,7 +178,7 @@ public class FlaskController {
             String sang1 = (String) requestData.get("sang1");
             String sang2 = (String) requestData.get("sang2");
 
-            String flaskUrl = "http://localhost:5001/sanggueon-gongtong";
+            String flaskUrl = "http://127.0.0.1:5001/sanggueon-gongtong";
             RestTemplate restTemplate = new RestTemplate();
 
             ResponseEntity<Map> response = restTemplate.postForEntity(flaskUrl, requestData, Map.class);
@@ -211,6 +215,13 @@ public class FlaskController {
             Map<String, Object> response = new HashMap<>();
             response.put("status", "success");
             response.put("message", "데이터 전송 성공");
+            response.put("sang1", sang1);
+            response.put("sang2", sang2);
+            response.put("gontongMenus", gongtongMenus);
+            response.put("menuInfo", menuInfo);
+            response.put("menuIngred", menuIngred);
+            response.put("sang1MenuCnt", sang1MenuCnt);
+            response.put("sang2MenuCnt", sang2MenuCnt);
             return ResponseEntity.ok(response);
         } else {
             Map<String, Object> errorResponse = new HashMap<>();

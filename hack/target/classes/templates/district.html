@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/css/inpop.css" />
     <link rel="stylesheet" href="/css/analpop.css" />
     <link rel="stylesheet" href="/css/menu_result.css" />
+    <link rel="stylesheet" href="/css/chartpop.css" />
     <style>
       .map_wrap {
         margin-top: 3px;
@@ -103,6 +104,12 @@
     <div id="sang-popup" class="spopup" style="display: none">
       <div class="popup-header">
         <h3>위치 선택</h3>
+        <button class="explain-btn">?</button>
+        <div class="tooltip">
+          원하시는 상권과 유사한 상권을 찾아 유사한 상권에서만 자주 언급되는
+          메뉴를 찾아 소개해주는 기능입니다!
+        </div>
+
         <button class="close-btn" id="closeSangModalBtn">닫기</button>
       </div>
       <div class="popup-body">
@@ -119,6 +126,11 @@
     <div id="map-popup" class="spopup" style="display: none">
       <div class="popup-header">
         <h3>위치 선택</h3>
+        <button class="explain-btn">?</button>
+        <div class="tooltip">
+          선택한 두 상권의 메뉴를 비교해 흔한 메뉴를 제외한 인기 메뉴와 두
+          상권에서 자주 언급되는 공통 메뉴를 제안합니다.
+        </div>
         <button class="close-btn" id="closeMapModalBtn">닫기</button>
       </div>
       <div class="popup-body">
@@ -155,6 +167,10 @@
     <div id="k-popup" class="ipopup" style="display: none">
       <div class="popup-header">
         <h3>키워드 입력</h3>
+        <button class="explain-btn">?</button>
+        <div class="tooltip">
+          원하시는 분위기 / 느낌을 기준으로 유사한 메뉴를 찾아주는 기능입니다.
+        </div>
         <button class="close-btn" id="closekeyModalBtn">닫기</button>
       </div>
 
@@ -185,6 +201,11 @@
     <div id="menu-popup" class="popup" style="display: none">
       <div class="popup-header">
         <h3>메뉴 선택</h3>
+        <button class="explain-btn">?</button>
+        <div class="tooltip">
+          원하는 메뉴로 유사한 메뉴를 찾아, 메뉴 개발에 도움을 받을수 있는
+          기능입니다
+        </div>
         <button class="close-btn" id="closeModalBtn">닫기</button>
       </div>
       <div class="location-search">
@@ -384,7 +405,26 @@
         </div>
       </div>
     </div>
-
+    <div id="chartmodal-modal" class="chartmodal" style="display: none">
+      <div class="chartmodal-content">
+        <span class="chartmodal-close-button">&times;</span>
+        <h3>상권 비교 분석</h3>
+        <!-- 차트 캔버스 -->
+        <!-- 차트 캔버스 -->
+        <div
+          class="chart-container"
+          style="width: 80%; height: 400px; margin: auto"
+        >
+          <canvas id="chartmodal-myChart1"></canvas>
+        </div>
+        <div
+          class="chart-container"
+          style="width: 80%; height: 400px; margin: auto"
+        >
+          <canvas id="chartmodal-myChart2"></canvas>
+        </div>
+      </div>
+    </div>
     <!-- <div id="analysis-result-popup" class="apopup">
       <div class="apopup-header">
         <h3>분석 결과</h3>
@@ -409,7 +449,9 @@
         <!-- 메뉴 카드가 여기에 동적으로 추가됩니다 -->
       </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="/js/keypop.js"></script>
+    <script src="/js/chart.js"></script>
     <script>
       // 전역 변수
       // 지도 검색 이벤트 함수
@@ -720,35 +762,6 @@
         );
       });
 
-      // 키워드 검색을 위한 폼 제출 처리 함수
-      // async function submitForm() {
-      //   try {
-      //     const keyword = document.getElementById("content").value.trim();
-      //     if (keyword) {
-      //       const response = await fetch(`/api/send-keyword`, {
-      //         method: "POST",
-      //         headers: {
-      //           "Content-Type": "application/json",
-      //         },
-      //         body: JSON.stringify({ keyword: keyword }),
-      //       });
-
-      //       if (!response.ok) {
-      //         throw new Error("Error in server response");
-      //       }
-
-      //       const data = await response.json();
-      //       console.log("키워드" + data);
-      //       // displayResults(data);
-      //     } else {
-      //       alert("키워드를 입력해주세요.");
-      //     }
-      //   } catch (error) {
-      //     console.error("Error:", error);
-      //     alert("키워드 분석 중 문제가 발생했습니다.");
-      //   }
-      // }
-
       async function submitForm() {
         try {
           const keyword = document.getElementById("content").value.trim();
@@ -765,7 +778,10 @@
               throw new Error("Error in server response");
             }
 
+            // const t = await response.text();
+            // console.log(t);
             const data = await response.json();
+
             console.log("서버 응답 데이터:", data);
 
             if (data.status === "success") {
@@ -784,26 +800,70 @@
         }
       }
 
-      // 검색 결과를 화면에 표시하는 함수
       function displayResults(menuItems) {
-        console.log(menuItems);
         const resultContainer = document.getElementById("analysis-result");
         resultContainer.innerHTML = ""; // 이전 결과 지우기
-        // const itemsToDisplay = menuItems.slice(0, 10);
-        if (menuItems.recommanded.length > 0) {
-          menuItems.recommanded.forEach((item) => {
-            console.log(item);
+
+        if (menuItems.recommanded && menuItems.recommanded.length > 0) {
+          menuItems.recommanded.forEach((menu, index) => {
+            // 'recommanded', 'menuInfo', 'menuIngred'의 값을 가져옵니다.
+            const menuName = menu;
+            const menuInfo = menuItems.menuInfo[index]
+              ? menuItems.menuInfo[index]
+              : "정보 없음";
+            const menuIngred = menuItems.menuIngred[index]
+              ? formatIngredients(menuItems.menuIngred[index])
+              : "재료 정보 없음";
+
+            // 결과 항목을 생성합니다.
             const resultItem = document.createElement("div");
             resultItem.classList.add("result-item");
-            resultItem.innerHTML = `<h4>${item}</h4>`;
+            resultItem.innerHTML = `
+                <div class="menu-name">
+                    <h4>${menuName}</h4>
+                    <span class="ingredients-icon" title="재료 보기"> 
+                       <img src="images/image.png" alt="재료 아이콘" 
+                       style="width: 50px; height: 50px;">
+                        </span>
+                </div>
+                <div class="ingredients" style="display: none;">
+                    <p>${menuIngred}</p>
+                </div>
+            `;
+
+            // 재료 아이콘에 마우스를 올리면 재료가 보이도록 처리합니다.
+            const ingredientsIcon =
+              resultItem.querySelector(".ingredients-icon");
+            const ingredients = resultItem.querySelector(".ingredients");
+
+            ingredientsIcon.addEventListener("mouseover", () => {
+              ingredients.style.display = "block"; // 재료 보이기
+            });
+
+            ingredientsIcon.addEventListener("mouseout", () => {
+              ingredients.style.display = "none"; // 재료 숨기기
+            });
+
             resultContainer.appendChild(resultItem);
           });
         } else {
           resultContainer.innerHTML = "<p>검색된 메뉴가 없습니다.</p>";
         }
+
         openResultModal();
       }
 
+      // 재료 배열을 깔끔한 문자열로 변환하는 함수
+      function formatIngredients(ingredientsArray) {
+        // ingredientsArray가 배열인지 확인하고, 배열이면 ','로 구분하여 문자열로 변환
+        if (Array.isArray(ingredientsArray)) {
+          return ingredientsArray
+            .map((item) => item.replace(/[\\[\\]]/g, ""))
+            .join(", "); // 배열 안의 대괄호를 제거하고 구분자 ','로 합침
+        } else {
+          return ingredientsArray; // 이미 문자열이면 그대로 반환
+        }
+      }
       // 결과 모달 열기 함수
       function openResultModal() {
         const modal = document.getElementById("keyword-result-popup");
@@ -828,99 +888,66 @@
     <!-- JavaScript -->
 
     <script>
-      //   const menuWrapper = document.getElementById("menuWrapper");
-      //   // const analyzeButton = document.getElementById("Canalyzebutton");
-      //   // const closePopupButton = document.getElementById("menuclosePopup");
+      document.addEventListener("DOMContentLoaded", () => {
+        document
+          .querySelector("#analyze-button")
+          .addEventListener("click", () => {
+            const sang1 = document.querySelector("#dsearch-location").value;
+            const sang2 = document.querySelector(
+              "#another-search-location"
+            ).value;
+            sendGongTong();
+            const chartmodal = document.querySelector("#chartmodal-modal");
+            chartmodal.classList.remove("hidden");
+            chartmodal.style.display = "flex";
+            chartmodal.style.visibility = "visible";
+            chartmodal.style.opacity = "1";
+            // receiveSanggueonGongtong();
+            sendOnly();
 
-      //   // // 팝업 열기
-      //   // analyzeButton.addEventListener("click", () => {
-      //   //   menuWrapper.style.display = "block"; // 팝업 열기
-      //   // });
+            async function sendGongTong() {
+              try {
+                const response = await fetch("/api/send-sanggueon-gongtong", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ sang1: sang1, sang2: sang2 }),
+                });
+                console.log(sang1 + " / " + sang2);
 
-      //   // // 팝업 닫기
-      //   // closePopupButton.addEventListener("click", () => {
-      //   //   menuWrapper.style.display = "none"; // 팝업 닫기
-      //   // });
-
-      //   // 메뉴 데이터로 동적으로 카드 생성
-      //   const popupContent = document.querySelector(".popup-content2");
-      //   menuData.forEach((item) => {
-      //     const menuCard = document.createElement("div");
-      //     menuCard.classList.add("menu-card");
-
-      //     menuCard.innerHTML = `
-      //   <img src="${item.imageUrl}" alt="메뉴 사진" />
-      //   <h3>${item.name}</h3>
-      //   <p>${item.description}</p>
-      //   <button class="info-btn">?</button>
-      //   <div class="detail-popup"></div>
-      // `;
-
-      //     popupContent.appendChild(menuCard);
-      //   });
-
-      //   // 각 메뉴 카드에 이벤트 추가
-      //   document.querySelectorAll(".info-btn").forEach((button) => {
-      //     button.addEventListener("click", (e) => {
-      //       const menuCard = e.target.closest(".menu-card");
-      //       const detailPopup = menuCard.querySelector(".detail-popup");
-
-      //       detailPopup.innerHTML = `<p><strong>재료:</strong> 이 메뉴는 데이터로 받을거면 안에 뭘 적어야할까요..?</p>`;
-      //       menuCard.classList.toggle("active");
-      //     });
-      //   });
-
-      document
-        .querySelector("#analyze-button")
-        .addEventListener("click", () => {
-          const sang1 = document.querySelector("#dsearch-location").value;
-          const sang2 = document.querySelector(
-            "#another-search-location"
-          ).value;
-
-          sendGongTong();
-          sendOnly();
-
-          async function sendGongTong() {
-            try {
-              const response = await fetch("/api/send-sanggueon-gongtong", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ sang1: sang1, sang2: sang2 }),
-              });
-              console.log(sang1 + " / " + sang2);
-
-              if (!response.ok) {
-                throw new Error("Error in server response");
+                if (!response.ok) {
+                  throw new Error("Error in server response");
+                }
+                const data = await response.json();
+                drawCommonMenuChart(data); // 첫 번째 차트
+                drawComparisonChart(data); // 두 번째 차트
+                console.log(`Response for 상권 ${sang1} ${sang2}:`, data);
+              } catch (error) {
+                console.error(`Error sending 상권 ${sang1}:`, error);
               }
-              const data = response.json();
-              console.log(`Response for 상권 ${sang1}:`, data);
-            } catch (error) {
-              console.error(`Error sending 상권 ${sang1}:`, error);
             }
-          }
 
-          async function sendOnly() {
-            try {
-              const response = await fetch("api/send-sanggueon-only", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ sang1: sang1, sang2: sang2 }),
-              });
-              if (!response.ok) {
-                throw new Error("Error in server response");
+            async function sendOnly() {
+              try {
+                const response = await fetch("api/send-sanggueon-only", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ sang1: sang1, sang2: sang2 }),
+                });
+                if (!response.ok) {
+                  throw new Error("Error in server response");
+                }
+                const data = response.json();
+                console.log("Response for 상권only", data);
+              } catch (error) {
+                console.error("Error sending 상권only", error);
               }
-              const data = response.json();
-              console.log("Response for 상권only", data);
-            } catch (error) {
-              console.error("Error sending 상권only", error);
             }
-          }
-        });
+          });
+      });
       async function udisplayResults(menuData) {
         try {
           // 메뉴 데이터가 Promise일 경우 해결하여 실제 데이터 얻기
