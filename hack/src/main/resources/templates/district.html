@@ -878,6 +878,9 @@
             "#another-search-location"
           ).value;
 
+          sendGongTong();
+          sendOnly();
+
           async function sendGongTong() {
             try {
               const response = await fetch("/api/send-sanggueon-gongtong", {
@@ -898,9 +901,26 @@
               console.error(`Error sending 상권 ${sang1}:`, error);
             }
           }
-          sendGongTong();
-        });
 
+          async function sendOnly() {
+            try {
+              const response = await fetch("api/send-sanggueon-only", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ sang1: sang1, sang2: sang2 }),
+              });
+              if (!response.ok) {
+                throw new Error("Error in server response");
+              }
+              const data = response.json();
+              console.log("Response for 상권only", data);
+            } catch (error) {
+              console.error("Error sending 상권only", error);
+            }
+          }
+        });
       async function udisplayResults(menuData) {
         try {
           // 메뉴 데이터가 Promise일 경우 해결하여 실제 데이터 얻기
@@ -923,12 +943,12 @@
               menuCard.classList.add("menu-card");
 
               menuCard.innerHTML = `
-                  <img src="/images/${similarMenu}.jpg" alt="${similarMenu}" style="width: 200px; height: 150px; object-fit: cover;">
-                    <h3>${similarMenu}</h3>
-                    <p>추천 메뉴: ${resolvedData.menu}</p>
-                    <button class="info-btn">?</button>
-                    <div class="detail-popup"></div>
-                `;
+                        <img src="/images/${similarMenu}.jpg" alt="${similarMenu}" style="width: 200px; height: 150px; object-fit: cover;">
+                          <h3>${similarMenu}</h3>
+                          <p>추천 메뉴: ${resolvedData.menu}</p>
+                          <button class="info-btn">?</button>
+                          <div class="detail-popup"></div>
+                      `;
 
               popupContent.appendChild(menuCard);
 
