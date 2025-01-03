@@ -866,6 +866,9 @@
                 const sang1 = document.querySelector("#dsearch-location").value;
                 const sang2 = document.querySelector("#another-search-location").value;
 
+                sendGongTong();
+                sendOnly();
+
                 async function sendGongTong(){
                   try{
                     const response = await fetch("/api/send-sanggueon-gongtong",{
@@ -886,7 +889,25 @@
                     console.error(`Error sending 상권 ${sang1}:`, error);
                   }
                 }
-                sendGongTong();
+
+                async function sendOnly(){
+                  try{
+                    const response = await fetch("api/send-sanggueon-only",{
+                      method:"POST",
+                      headers:{
+                        "Content-Type":"application/json",
+                      },
+                      body:JSON.stringify({sang1:sang1,sang2:sang2}),
+                    });
+                    if(!response.ok){
+                      throw new Error("Error in server response");
+                    }
+                    const data = response.json();
+                    console.log("Response for 상권only", data);
+                  }catch(error){
+                    console.error("Error sending 상권only", error);
+                  }
+                }
               })
 
       document
