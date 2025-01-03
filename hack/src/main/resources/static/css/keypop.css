@@ -152,7 +152,11 @@ body {
   background-color: #9c27b0; /* 기타 메뉴 (보라) */
 }
 
-/* 기타 메뉴 입력창 및 추가 버튼 스타일 */
+#autocomplete-container {
+  position: relative; /* 부모 요소에 상대 위치 지정 */
+  width: 100%; /* 부모 요소가 화면 크기에 맞게 확장 */
+}
+
 #newMenuInput {
   flex-grow: 1; /* 화면 크기에 맞게 확장 */
   padding: 12px 20px;
@@ -161,6 +165,41 @@ body {
   border: 2px solid #ddd;
   background-color: #f9f9f9;
   transition: border-color 0.3s ease;
+  width: 79%; /* 입력창이 부모 너비에 맞게 크기 설정 */
+}
+
+#newMenuInput:focus {
+  border-color: #888; /* 포커스시 테두리 색상 변경 */
+}
+
+.autocomplete-results {
+  position: absolute; /* 입력창 바로 아래에 나타나게 */
+  top: 100%; /* 입력창 바로 아래로 위치 */
+  left: 0;
+  right: 0;
+  width: 50%;
+  max-height: 200px; /* 최대 높이 설정 */
+  overflow-y: auto; /* 목록이 많으면 스크롤 */
+  border: 1px solid #ddd;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 999; /* z-index 설정해서 다른 요소보다 위에 나오게 */
+  display: none; /* 기본적으로 숨김 */
+}
+
+.search-item {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.search-item:hover {
+  background-color: #f0f0f0;
+}
+
+.no-results {
+  padding: 8px;
+  text-align: center;
+  color: #888;
 }
 
 #newMenuInput:focus {

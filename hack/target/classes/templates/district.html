@@ -43,16 +43,16 @@
         <div class="category-buttons">
           <!-- 상권 1개 -->
           <button id="opensang" class="category-btn" data-category="district">
-            상권메뉴비교
+            상권 직접 비교
           </button>
           <button id="opensang2" class="category-btn" data-category="district2">
-            상권메뉴비교2
+            상권 유사도 기반 비교
           </button>
           <button id="openkey" class="category-btn" data-category="keyword">
-            키워드
+            키워드 분석
           </button>
           <button id="openmenu" class="category-btn" data-category="pub">
-            유사메뉴
+            유사한 메뉴 추천
           </button>
 
           <!-- <button class="category-btn" data-category="mart">버튼 4</button> -->
@@ -62,7 +62,16 @@
       <div id="re-popup" class="rpopup">
         <div class="rpop-header">
           <h2>추천 고려메뉴</h2>
-          <button class="close-btn" id="closereModalBtn">닫기</button>
+          <div class="arrow-container">
+            <button id="left-arrow" class="arrow left-arrow">&lt;</button>
+            <button
+              id="right-arrow"
+              class="arrow right-arrow"
+              style="visibility: hidden"
+            >
+              &gt;
+            </button>
+          </div>
         </div>
 
         <ul class="top5-list" id="top5MenuList">
@@ -230,13 +239,17 @@
             <button class="toggle-btn" data-menu="말차 라떼">말차 라떼</button>
           </div>
           <div class="menu-item">
-            <button class="toggle-btn" data-menu="얼그레이">얼그레이</button>
+            <button class="toggle-btn" data-menu="얼그레이 티">
+              얼그레이 티
+            </button>
           </div>
           <div class="menu-item">
             <button class="toggle-btn" data-menu="버블티">버블티</button>
           </div>
           <div class="menu-item">
-            <button class="toggle-btn" data-menu="캐모마일">캐모마일</button>
+            <button class="toggle-btn" data-menu="캐모마일 티">
+              캐모마일 티
+            </button>
           </div>
         </div>
 
@@ -340,7 +353,7 @@
           </div>
           <div class="menu-item">
             <button class="toggle-btn" data-menu="닭가슴살 샐러드">
-              닭가슴살 샐러드
+              닭가슴살 샌드위치
             </button>
           </div>
           <div class="menu-item">
@@ -354,12 +367,15 @@
         <div class="menu-category others">
           <h3>메뉴 검색</h3>
           <div id="otherMenuList"></div>
-          <div id="input-container">
+          <div id="autocomplete-container">
             <input
               type="text"
               id="newMenuInput"
               placeholder="검색하고싶은 메뉴를 추가하고 클릭해주세요"
+              class="autocomplete-input"
             />
+            <div id="suggestionsList" class="autocomplete-results"></div>
+
             <button id="addMenuBtn" class="menu-btn">추가</button>
           </div>
         </div>
@@ -658,7 +674,6 @@
           }
         });
 
-
       // 검색 버튼 클릭 이벤트 처리 함수
       function setupSearchButton(
         searchBtnId,
@@ -706,11 +721,39 @@
       });
 
       // 키워드 검색을 위한 폼 제출 처리 함수
+      // async function submitForm() {
+      //   try {
+      //     const keyword = document.getElementById("content").value.trim();
+      //     if (keyword) {
+      //       const response = await fetch(`/api/send-keyword`, {
+      //         method: "POST",
+      //         headers: {
+      //           "Content-Type": "application/json",
+      //         },
+      //         body: JSON.stringify({ keyword: keyword }),
+      //       });
+
+      //       if (!response.ok) {
+      //         throw new Error("Error in server response");
+      //       }
+
+      //       const data = await response.json();
+      //       console.log("키워드" + data);
+      //       // displayResults(data);
+      //     } else {
+      //       alert("키워드를 입력해주세요.");
+      //     }
+      //   } catch (error) {
+      //     console.error("Error:", error);
+      //     alert("키워드 분석 중 문제가 발생했습니다.");
+      //   }
+      // }
+
       async function submitForm() {
         try {
           const keyword = document.getElementById("content").value.trim();
           if (keyword) {
-            const response = await fetch(`/api/send-keyword`, {
+            const response = await fetch("/api/send-keyword", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -723,7 +766,15 @@
             }
 
             const data = await response.json();
-            // displayResults(data);
+            console.log("서버 응답 데이터:", data);
+
+            if (data.status === "success") {
+              // console.log("추천 메뉴 리스트:", data.recommanded);
+              // 이곳에서 추천 메뉴 리스트를 활용할 수 있습니다.
+              displayResults(data);
+            } else {
+              alert("데이터 전송 실패: " + data.message);
+            }
           } else {
             alert("키워드를 입력해주세요.");
           }
@@ -732,72 +783,19 @@
           alert("키워드 분석 중 문제가 발생했습니다.");
         }
       }
-      // async function submitForm() {
-      //   try {
-      //     const keyword = document.getElementById("content").value.trim();
-      //     if (keyword) {
-      //       // 첫 번째 요청: 서버로 키워드 전송
-      //       const response = await fetch(
-      //         `http://192.168.219.108:5001/analyze-keyword`,
-      //         {
-      //           method: "POST",
-      //           headers: {
-      //             "Content-Type": "application/json",
-      //           },
-      //           body: JSON.stringify({ keyword: keyword }),
-      //         }
-      //       );
-
-      //       if (!response.ok) {
-      //         throw new Error("서버 응답 오류");
-      //       }
-
-      //       // Flask 서버에서 받은 응답 처리
-      //       const data = await response.json();
-
-      //       // 'recommanded'가 배열이어야 하는데 문자열이 오는 경우를 처리
-      //       const recommanded = Array.isArray(data.recommanded)
-      //         ? data.recommanded
-      //         : [];
-
-      //       // 두 번째 요청: `/receive-keyword-menu`로 받은 데이터를 서버에 전송
-      //       const secondResponse = await fetch("/api/receive-keyword-menu", {
-      //         method: "POST",
-      //         headers: {
-      //           "Content-Type": "application/json",
-      //         },
-      //         body: JSON.stringify({
-      //           status: "success", // 두 번째 요청은 성공 상태
-      //           keyword: keyword, // 첫 번째 요청에서 보낸 동일한 키워드 사용
-      //           recommanded: recommanded, // 추천 메뉴 리스트 (빈 배열로 설정)
-      //         }),
-      //       });
-
-      //       if (!secondResponse.ok) {
-      //         throw new Error("두 번째 요청에서 오류 발생");
-      //       }
-
-      //       const secondData = await secondResponse.json();
-      //       console.log("두 번째 응답:", secondData.message); // 두 번째 응답 메시지 출력
-      //     } else {
-      //       alert("키워드를 입력해주세요.");
-      //     }
-      //   } catch (error) {
-      //     console.error("Error:", error);
-      //     alert("키워드 분석 중 문제가 발생했습니다.");
-      //   }
-      // }
 
       // 검색 결과를 화면에 표시하는 함수
       function displayResults(menuItems) {
+        console.log(menuItems);
         const resultContainer = document.getElementById("analysis-result");
         resultContainer.innerHTML = ""; // 이전 결과 지우기
-        const itemsToDisplay = menuItems.slice(0, 10);
-        if (itemsToDisplay.length > 0) {
-          itemsToDisplay.forEach((item) => {
+        // const itemsToDisplay = menuItems.slice(0, 10);
+        if (menuItems.recommanded.length > 0) {
+          menuItems.recommanded.forEach((item) => {
+            console.log(item);
             const resultItem = document.createElement("div");
             resultItem.classList.add("result-item");
-            resultItem.innerHTML = `<h4>${item.name}</h4><p>${item.info}</p><p><strong>재료:</strong> ${item.ingred}</p>`;
+            resultItem.innerHTML = `<h4>${item}</h4>`;
             resultContainer.appendChild(resultItem);
           });
         } else {
@@ -830,120 +828,131 @@
     <!-- JavaScript -->
 
     <script>
-      const menuData = [
-        {
-          name: "아메리카노",
-          description: "다크 로스팅으로 설탕이 없고 바디가 무거운 음료",
-          imageUrl: "https://via.placeholder.com/200x150",
-        },
-        {
-          name: "카페라떼",
-          description: "부드러운 우유와 에스프레소의 조화",
-          imageUrl: "https://via.placeholder.com/200x150",
-        },
-        {
-          name: "카푸치노",
-          description: "진한 에스프레소와 우유 거품",
-          imageUrl: "https://via.placeholder.com/200x150",
-        },
-        {
-          name: "카푸치노",
-          description: "진한 에스프레소와 우유 거품",
-          imageUrl: "https://via.placeholder.com/200x150",
-        },
-        {
-          name: "카푸치노",
-          description: "진한 에스프레소와 우유 거품",
-          imageUrl: "https://via.placeholder.com/200x150",
-        },
-        {
-          name: "카푸치노",
-          description: "진한 에스프레소와 우유 거품",
-          imageUrl: "https://via.placeholder.com/200x150",
-        },
-        {
-          name: "카푸치노",
-          description: "진한 에스프레소와 우유 거품",
-          imageUrl: "https://via.placeholder.com/200x150",
-        },
-        {
-          name: "카푸치노",
-          description: "진한 에스프레소와 우유 거품",
-          imageUrl: "https://via.placeholder.com/200x150",
-        },
-      ];
+      //   const menuWrapper = document.getElementById("menuWrapper");
+      //   // const analyzeButton = document.getElementById("Canalyzebutton");
+      //   // const closePopupButton = document.getElementById("menuclosePopup");
 
-      const menuWrapper = document.getElementById("menuWrapper");
-      // const analyzeButton = document.getElementById("Canalyzebutton");
-      // const closePopupButton = document.getElementById("menuclosePopup");
+      //   // // 팝업 열기
+      //   // analyzeButton.addEventListener("click", () => {
+      //   //   menuWrapper.style.display = "block"; // 팝업 열기
+      //   // });
 
-      // // 팝업 열기
-      // analyzeButton.addEventListener("click", () => {
-      //   menuWrapper.style.display = "block"; // 팝업 열기
-      // });
+      //   // // 팝업 닫기
+      //   // closePopupButton.addEventListener("click", () => {
+      //   //   menuWrapper.style.display = "none"; // 팝업 닫기
+      //   // });
 
-      // // 팝업 닫기
-      // closePopupButton.addEventListener("click", () => {
-      //   menuWrapper.style.display = "none"; // 팝업 닫기
-      // });
+      //   // 메뉴 데이터로 동적으로 카드 생성
+      //   const popupContent = document.querySelector(".popup-content2");
+      //   menuData.forEach((item) => {
+      //     const menuCard = document.createElement("div");
+      //     menuCard.classList.add("menu-card");
 
-      // 메뉴 데이터로 동적으로 카드 생성
-      const popupContent = document.querySelector(".popup-content2");
-      menuData.forEach((item) => {
-        const menuCard = document.createElement("div");
-        menuCard.classList.add("menu-card");
+      //     menuCard.innerHTML = `
+      //   <img src="${item.imageUrl}" alt="메뉴 사진" />
+      //   <h3>${item.name}</h3>
+      //   <p>${item.description}</p>
+      //   <button class="info-btn">?</button>
+      //   <div class="detail-popup"></div>
+      // `;
 
-        menuCard.innerHTML = `
-      <img src="${item.imageUrl}" alt="메뉴 사진" />
-      <h3>${item.name}</h3>
-      <p>${item.description}</p>
-      <button class="info-btn">?</button>
-      <div class="detail-popup"></div>
-    `;
+      //     popupContent.appendChild(menuCard);
+      //   });
 
-        popupContent.appendChild(menuCard);
-      });
+      //   // 각 메뉴 카드에 이벤트 추가
+      //   document.querySelectorAll(".info-btn").forEach((button) => {
+      //     button.addEventListener("click", (e) => {
+      //       const menuCard = e.target.closest(".menu-card");
+      //       const detailPopup = menuCard.querySelector(".detail-popup");
 
-      // 각 메뉴 카드에 이벤트 추가
-      document.querySelectorAll(".info-btn").forEach((button) => {
-        button.addEventListener("click", (e) => {
-          const menuCard = e.target.closest(".menu-card");
-          const detailPopup = menuCard.querySelector(".detail-popup");
-
-          detailPopup.innerHTML = `<p><strong>재료:</strong> 이 메뉴는 데이터로 받을거면 안에 뭘 적어야할까요..?</p>`;
-          menuCard.classList.toggle("active");
-        });
-      });
+      //       detailPopup.innerHTML = `<p><strong>재료:</strong> 이 메뉴는 데이터로 받을거면 안에 뭘 적어야할까요..?</p>`;
+      //       menuCard.classList.toggle("active");
+      //     });
+      //   });
 
       document
-              .querySelector("#analyze-button")
-              .addEventListener("click",()=>{
-                const sang1 = document.querySelector("#dsearch-location").value;
-                const sang2 = document.querySelector("#another-search-location").value;
+        .querySelector("#analyze-button")
+        .addEventListener("click", () => {
+          const sang1 = document.querySelector("#dsearch-location").value;
+          const sang2 = document.querySelector(
+            "#another-search-location"
+          ).value;
 
-                async function sendGongTong(){
-                  try{
-                    const response = await fetch("/api/send-sanggueon-gongtong",{
-                      method: "POST",
-                      headers:{
-                        "Content-Type":"application/json",
-                      },
-                      body:JSON.stringify({sang1:sang1,sang2:sang2}),
-                    });
-                    console.log(sang1+" / "+sang2);
+          async function sendGongTong() {
+            try {
+              const response = await fetch("/api/send-sanggueon-gongtong", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ sang1: sang1, sang2: sang2 }),
+              });
+              console.log(sang1 + " / " + sang2);
 
-                    if(!response.ok){
-                      throw new Error("Error in server response")
-                    }
-                    const data = response.json();
-                    console.log(`Response for 상권 ${sang1}:`, data);
-                  }catch (error) {
-                    console.error(`Error sending 상권 ${sang1}:`, error);
-                  }
-                }
-                sendGongTong();
-              })
+              if (!response.ok) {
+                throw new Error("Error in server response");
+              }
+              const data = response.json();
+              console.log(`Response for 상권 ${sang1}:`, data);
+            } catch (error) {
+              console.error(`Error sending 상권 ${sang1}:`, error);
+            }
+          }
+          sendGongTong();
+        });
 
+      async function udisplayResults(menuData) {
+        try {
+          // 메뉴 데이터가 Promise일 경우 해결하여 실제 데이터 얻기
+          const resolvedData = await menuData;
+
+          console.log(resolvedData); // 데이터 확인
+
+          // resolvedData가 객체일 경우 similarMenus를 순회
+          if (
+            resolvedData &&
+            resolvedData.similarMenus &&
+            Array.isArray(resolvedData.similarMenus)
+          ) {
+            const popupContent = document.querySelector(".popup-content2");
+            popupContent.innerHTML = ""; // 이전 결과 지우기
+
+            // similarMenus에서 각 유사 메뉴에 대해 카드 생성
+            resolvedData.similarMenus.forEach((similarMenu) => {
+              const menuCard = document.createElement("div");
+              menuCard.classList.add("menu-card");
+
+              menuCard.innerHTML = `
+                  <img src="/images/${similarMenu}.jpg" alt="${similarMenu}" style="width: 200px; height: 150px; object-fit: cover;">
+                    <h3>${similarMenu}</h3>
+                    <p>추천 메뉴: ${resolvedData.menu}</p>
+                    <button class="info-btn">?</button>
+                    <div class="detail-popup"></div>
+                `;
+
+              popupContent.appendChild(menuCard);
+
+              // "?" 버튼 클릭 시 상세 팝업 표시
+              const infoBtn = menuCard.querySelector(".info-btn");
+              const detailPopup = menuCard.querySelector(".detail-popup");
+
+              infoBtn.addEventListener("click", () => {
+                detailPopup.classList.toggle("show");
+                detailPopup.innerHTML = `<p>상세 정보: ${similarMenu}에 대한 추가 설명.</p>`;
+              });
+            });
+          } else {
+            console.error(
+              "resolvedData의 similarMenus 배열이 없습니다:",
+              resolvedData
+            );
+            alert("유효한 유사 메뉴 데이터가 없습니다.");
+          }
+        } catch (error) {
+          console.error("데이터 처리 오류:", error);
+          alert("메뉴 데이터를 불러오는 중 문제가 발생했습니다.");
+        }
+      }
       document
         .getElementById("Canalyzebutton")
         .addEventListener("click", () => {
@@ -973,6 +982,7 @@
                   `Response for menu ${selectedMenus.item(i).innerText}:`,
                   data
                 );
+                udisplayResults(data);
               } catch (error) {
                 console.error(
                   `Error sending menu ${selectedMenus.item(i).innerText}:`,
@@ -1000,313 +1010,6 @@
           }
         });
     </script>
-    <!-- <script>
-      // 지도 검색 이벤트
-      document
-        .getElementById("search-location")
-        .addEventListener("input", function () {
-          var keyword = this.value;
-
-          if (keyword.length > 0) {
-            // 주소 검색을 위한 카카오 API 호출
-            geocoder.addressSearch(keyword, function (result, status) {
-              if (status === kakao.maps.services.Status.OK) {
-                // 검색 결과가 있으면 결과 목록 표시
-                var searchResults = document.getElementById("search-results");
-                searchResults.innerHTML = ""; // 이전 결과 지우기
-
-                result.forEach(function (item) {
-                  var listItem = document.createElement("div");
-                  listItem.textContent = item.address_name;
-                  listItem.style.padding = "5px";
-                  listItem.style.cursor = "pointer";
-                  listItem.onclick = function () {
-                    // 목록 클릭 시 해당 위치로 이동하고 마커 추가
-                    var coords = new kakao.maps.LatLng(item.y, item.x);
-                    // map.setCenter(coords);
-                    map.panTo(coords);
-                    map.setLevel(3);
-                    // 기존 마커 제거
-                    if (currentMarker) {
-                      currentMarker.setMap(null);
-                    }
-
-                    // 새로운 마커 생성
-                    currentMarker = new kakao.maps.Marker({
-                      position: coords,
-                      map: map,
-                    });
-
-                    // 클릭한 위치의 위도, 경도 표시
-                    var message = "위도: " + item.y + ", 경도: " + item.x;
-                    document.getElementById("clickLatlng").innerHTML = message;
-
-                    // 다각형 생성
-                    createCircle(coords);
-
-                    // 결과 목록 숨기기
-                    searchResults.innerHTML = "";
-                  };
-                  searchResults.appendChild(listItem);
-                });
-              }
-            });
-          } else {
-            // 입력값이 없으면 목록 지우기
-            document.getElementById("search-results").innerHTML = "";
-          }
-        });
-      const searchInput = document.getElementById("dsearch-location");
-      const searchResults = document.getElementById("dsearch-results");
-
-      searchInput.addEventListener("input", async (e) => {
-        const query = e.target.value;
-        console.log(query);
-        if (query.length > 1) {
-          // 두 글자 이상 입력시 자동완성 시작
-          try {
-            // API 요청
-            const response = await fetch(`/autocomplete?query=${query}`);
-            const suggestions = await response.json();
-
-            // 결과를 화면에 표시
-            searchResults.innerHTML = "";
-            suggestions.forEach((suggestion) => {
-              const item = document.createElement("div");
-              item.textContent = suggestion;
-              item.classList.add("search-item");
-              searchResults.appendChild(item);
-
-              // 클릭 시 검색창에 텍스트 넣기
-              item.addEventListener("click", () => {
-                searchInput.value = suggestion;
-                searchResults.innerHTML = ""; // 클릭 후 결과 지우기
-              });
-            });
-          } catch (error) {
-            console.error("자동완성 API 호출 실패:", error);
-          }
-        } else {
-          searchResults.innerHTML = ""; // 입력이 적을 때는 자동완성 숨김
-        }
-      });
-
-      // 검색 버튼 클릭 시의 동작
-      searchButton.addEventListener("click", () => {
-        const query = searchInput.value;
-        console.log("검색된 주소:", query);
-        // 여기에 검색 결과 처리 로직 추가
-      });
-      document
-        .getElementById("search-location2")
-        .addEventListener("input", function () {
-          var keyword = this.value;
-
-          if (keyword.length > 0) {
-            // 주소 검색을 위한 카카오 API 호출
-            geocoder.addressSearch(keyword, function (result, status) {
-              if (status === kakao.maps.services.Status.OK) {
-                // 검색 결과가 있으면 결과 목록 표시
-                var searchResults = document.getElementById("search-results2");
-                searchResults.innerHTML = ""; // 이전 결과 지우기
-
-                result.forEach(function (item) {
-                  var listItem = document.createElement("div");
-                  listItem.textContent = item.address_name;
-                  listItem.style.padding = "5px";
-                  listItem.style.cursor = "pointer";
-                  listItem.onclick = function () {
-                    // 목록 클릭 시 해당 위치로 이동하고 마커 추가
-                    var coords = new kakao.maps.LatLng(item.y, item.x);
-                    map.setCenter(coords);
-                    map.setLevel(3);
-
-                    // 기존 마커 제거
-                    if (currentMarker) {
-                      currentMarker.setMap(null);
-                    }
-
-                    // 새로운 마커 생성
-                    currentMarker = new kakao.maps.Marker({
-                      position: coords,
-                      map: map,
-                    });
-
-                    // 클릭한 위치의 위도, 경도 표시
-                    var message = "위도: " + item.y + ", 경도: " + item.x;
-                    document.getElementById("clickLatlng").innerHTML = message;
-
-                    // 다각형 생성
-                    createCircle(coords);
-
-                    // 결과 목록 숨기기
-                    searchResults.innerHTML = "";
-                  };
-                  searchResults.appendChild(listItem);
-                });
-              }
-            });
-          } else {
-            // 입력값이 없으면 목록 지우기
-            document.getElementById("search-results2").innerHTML = "";
-          }
-        });
-      // 검색 버튼 클릭 이벤트
-      document
-        .getElementById("search-btn")
-        .addEventListener("click", function () {
-          var address = document.getElementById("search-location").value;
-
-          // 주소로 좌표 검색
-          geocoder.addressSearch(address, function (result, status) {
-            if (status === kakao.maps.services.Status.OK) {
-              var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-
-              // 지도 중심 이동
-              map.setCenter(coords);
-
-              // 이전 검색 마커가 있으면 제거
-              if (currentMarker) {
-                currentMarker.setMap(null);
-              }
-
-              // 검색된 위치에 새 마커 추가
-              currentMarker = new kakao.maps.Marker({
-                position: coords,
-                map: map,
-              });
-
-              // 다각형 생성
-              createCircle(coords);
-            } else {
-              alert("해당 주소를 찾을 수 없습니다.");
-            }
-          });
-        });
-      // 메뉴 추가 버튼
-      document
-        .getElementById("addMenuBtn")
-        .addEventListener("click", function () {
-          var menuName = document.getElementById("newMenuInput").value;
-          if (menuName.trim() !== "") {
-            var newMenuItem = document.createElement("div");
-            newMenuItem.textContent = menuName;
-            document.getElementById("otherMenuList").appendChild(newMenuItem);
-            document.getElementById("newMenuInput").value = "";
-          }
-        });
-      // 선택된 메뉴 저
-
-      // 메뉴 선택 토글
-      document.querySelectorAll(".toggle-btn").forEach((button) => {
-        button.addEventListener("click", () => {
-          const menu = button.getAttribute("data-menu");
-          if (selectedMenus.includes(menu)) {
-            selectedMenus.splice(selectedMenus.indexOf(menu), 1);
-            button.classList.remove("selected");
-          } else {
-            selectedMenus.push(menu);
-            button.classList.add("selected");
-          }
-        });
-      });
-
-      // 버튼 및 모달 요소 가져오기
-      const openSangBtn = document.getElementById("opensang");
-      const openSang2Btn = document.getElementById("opensang2");
-      const openMenuBtn = document.getElementById("openmenu");
-      const openkeyBtn = document.getElementById("openkey");
-
-      const mapPopup = document.getElementById("map-popup");
-      const menuPopup = document.getElementById("menu-popup");
-      const kPopup = document.getElementById("k-popup");
-      const sangPopup = document.getElementById("sang-popup");
-
-      const closereModalBtn = document.getElementById("closereModalBtn");
-      const closeMapModalBtn = document.getElementById("closeMapModalBtn");
-      const closeMenuModalBtn = document.getElementById("closeModalBtn");
-      const closekeyModalBtn = document.getElementById("closekeyModalBtn");
-
-      document
-        .getElementById("opensang2")
-        .addEventListener("click", function () {
-          // map-popup2 요소를 찾고, display를 block으로 설정하여 보이게 만듬
-          document.getElementById("map-popup2").style.display = "flex";
-        });
-      // 버튼 클릭 이벤트로 모달 열기
-      openSangBtn.addEventListener("click", function () {
-        menuPopup.style.display = "none";
-        mapPopup.style.display = "flex";
-        kPopup.style.display = "none";
-        sangPopup.style.display = "none";
-        // 지도 모달 열기
-      });
-
-      openSang2Btn.addEventListener("click", function () {
-        menuPopup.style.display = "none";
-        mapPopup.style.display = "none";
-        kPopup.style.display = "none";
-        sangPopup.style.display = "flex";
-      });
-
-      openMenuBtn.addEventListener("click", function () {
-        mapPopup.style.display = "none";
-        kPopup.style.display = "none";
-        menuPopup.style.display = "flex";
-        sangPopup.style.display = "none";
-        console.log(latlng1);
-        map.setCenter(latlng1);
-        console.log(selectedLat, selectedLng);
-        map.setLevel(3);
-      });
-
-      openkeyBtn.addEventListener("click", function () {
-        kPopup.style.display = "flex";
-        mapPopup.style.display = "none";
-        menuPopup.style.display = "none";
-        sangPopup.style.display = "none";
-        // map.setCenter(lat, lng);
-        map.setLevel(3);
-      });
-
-      closereModalBtn.addEventListener("click", function () {
-        document.getElementById("re-popup").style.display = "none";
-      });
-      // 닫기 버튼 클릭 이벤트로 모달 닫기
-      closeMapModalBtn.addEventListener("click", function () {
-        mapPopup.style.display = "none"; // 지도 모달 닫기
-      });
-
-      closeMenuModalBtn.addEventListener("click", function () {
-        menuPopup.style.display = "none"; // 메뉴 모달 닫기
-      });
-
-      closekeyModalBtn.addEventListener("click", function () {
-        kPopup.style.display = "none";
-      });
-
-      // 팝업 닫기
-      document
-        .getElementById("closeMenuPopup")
-        .addEventListener("click", () => {
-          document.getElementById("menu-popup").style.display = "none";
-        });
-
-      document
-        .getElementById("closeAnalysisPopup")
-        .addEventListener("click", () => {
-          document.getElementById("analysis-popup").style.display = "none";
-        });
-      // 닫기 버튼 이벤트
-      document
-        .getElementById("closeAnalysisBtn")
-        .addEventListener("click", () => {
-          document.getElementById("analysis-popup").style.display = "none";
-        });
-      document.getElementById("closeModalBtn").addEventListener("click", () => {
-        document.getElementById("menu-popup").style.display = "none";
-      });
-    </script> -->
 
     <!-- 메뉴 선택 JS -->
     <div id="clickLatlng"></div>

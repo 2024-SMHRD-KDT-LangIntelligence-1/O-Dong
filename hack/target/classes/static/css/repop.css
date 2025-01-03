@@ -5,6 +5,14 @@ body {
   padding: 0;
 }
 
+#re-popup {
+  position: absolute;
+  top: 20%;
+  left: 10%;
+  transform: translate(-50%, -50%); /* 초기 위치 (중앙) */
+  transition: transform 0.3s ease;
+}
+
 .rpopup {
   background-color: #778beb; /* 기준 색상 */
   color: #ffffff; /* 흰색 텍스트 */
@@ -20,8 +28,11 @@ body {
 
 .rpop-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  position: relative;
 }
 
 .repopup h2 {
@@ -64,4 +75,39 @@ body {
 .category {
   font-size: 18px;
   color: #fefefe; /* 밝은 흰색 텍스트 */
+}
+
+.arrow-container {
+  display: flex;
+  gap: 5px;
+}
+
+.arrow {
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.arrow:hover {
+  background-color: #0056b3;
+  transform: scale(1.1);
+}
+
+.right-arrow {
+  position: absolute;
+  right: 0; /* 오른쪽 화살표를 팝업 박스 끝에 위치 */
+  top: 50%;
+  transform: translateY(-50%); /* 세로 중앙 정렬 */
+  visibility: hidden; /* 처음에는 오른쪽 화살표 숨김 */
 }

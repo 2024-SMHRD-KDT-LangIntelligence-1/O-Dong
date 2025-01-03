@@ -55,7 +55,7 @@ public class FlaskController {
         try {
             String keyword = requestData.get("keyword");
 
-            String flaskUrl = "http://192.168.219.108:5001/analyze-keyword";
+            String flaskUrl = "http://127.0.0.1:5001/analyze-keyword";
             RestTemplate restTemplate = new RestTemplate();
 
             // Flask로 요청 데이터 전송
@@ -99,6 +99,7 @@ public class FlaskController {
             Map<String, Object> response = new HashMap<>();
             response.put("status", "success");
             response.put("message", "데이터 전송 완료");
+            response.put("recommanded", recommanded);
             return ResponseEntity.ok(response);
         } else {
             Map<String, Object> errorResponse = new HashMap<>();
@@ -115,7 +116,7 @@ public class FlaskController {
         try {
             String menu = (String) requestData.get("menu");
 
-            String flaskUrl = "http://localhost:5001/analyze-menu";
+            String flaskUrl = "http://127.0.0.1:5001/analyze-menu";
             RestTemplate restTemplate = new RestTemplate();
 
             // Flask로 요청 데이터 전송
@@ -146,6 +147,7 @@ public class FlaskController {
             Map<String, Object> response = new HashMap<>();
             response.put("status", "success");
             response.put("message", "데이터 전송 성공");
+            response.put("similarMenus", similarMenus);
             return ResponseEntity.ok(response);
         } else {
             Map<String, Object> errorResponse = new HashMap<>();

@@ -210,6 +210,20 @@ body {
   border-radius: 4px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+/* .autocomplete-results {
+  position: absolute;
+  top: 900%; 
+  left: 0;
+  right: 0;
+  max-height: 200px; 
+  overflow-y: auto; 
+  border: 1px solid #ccc;
+  border-top: none;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 999; 
+  display: none; 
+} */
 
 #search-results2 div {
   padding: 10px;

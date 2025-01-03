@@ -242,8 +242,68 @@ function createCircle(latlng) {
 // DB기반 검색 id : search-location,dsearch-location
 
 // 맵 api기반 검색 id : search-location2
-var closeModalBtn = document.getElementById("closereModalBtn");
+const repopup = document.getElementById("re-popup");
+const leftArrow = document.getElementById("left-arrow");
+const rightArrow = document.getElementById("right-arrow");
 
-closeModalBtn.onclick = function () {
-  document.getElementById("re-popup").style.display = "none";
-};
+// 왼쪽 화살표 클릭 (왼쪽으로 이동)
+leftArrow.addEventListener("click", () => {
+  repopup.style.transform = "translate(-145%, -50%)"; // 팝업을 왼쪽으로 이동
+  leftArrow.style.visibility = "hidden"; // 왼쪽 화살표 숨김
+  rightArrow.style.visibility = "visible"; // 오른쪽 화살표 표시
+});
+
+// 오른쪽 화살표 클릭 (중앙으로 이동)
+rightArrow.addEventListener("click", () => {
+  repopup.style.transform = "translate(-50%, -50%)"; // 팝업을 중앙으로 이동
+  rightArrow.style.visibility = "hidden"; // 오른쪽 화살표 숨김
+  leftArrow.style.visibility = "visible"; // 왼쪽 화살표 표시
+});
+
+async function fetchMenuSuggestions() {
+  const query2 = document.getElementById("newMenuInput").value;
+  const searchResult = document.getElementById("suggestionsList");
+
+  if (query2.length > 1) {
+    // 2글자 이상 입력 시 자동완성 시작
+    try {
+      const response2 = await fetch(`/autocomplete2?query=${query2}`);
+      const suggestions2 = await response2.json();
+
+      console.log(suggestions2);
+
+      searchResult.innerHTML = ""; // 이전 결과 지우기
+
+      if (suggestions2.length > 0) {
+        searchResult.style.display = "block"; // 결과 표시
+
+        suggestions2.forEach((suggestion) => {
+          const item = document.createElement("div");
+          item.textContent = suggestion;
+          item.classList.add("search-item");
+          searchResult.appendChild(item);
+
+          item.addEventListener("click", () => {
+            document.getElementById("newMenuInput").value = suggestion;
+            searchResult.innerHTML = ""; // 클릭 후 결과 지우기
+            searchResult.style.display = "none"; // 자동완성 창 숨기기
+          });
+        });
+      } else {
+        const noResultsItem = document.createElement("div");
+        noResultsItem.textContent = "결과 없음";
+        noResultsItem.classList.add("search-item", "no-results");
+        searchResult.appendChild(noResultsItem);
+        searchResult.style.display = "block"; // 결과 없음 메시지 표시
+      }
+    } catch (error) {
+      console.error("자동완성 API 호출 실패:", error);
+    }
+  } else {
+    searchResult.innerHTML = ""; // 입력이 짧을 때 자동완성 결과 숨김
+    searchResult.style.display = "none"; // 자동완성 창 숨기기
+  }
+}
+document
+  .getElementById("newMenuInput")
+  .addEventListener("input", () => fetchMenuSuggestions());

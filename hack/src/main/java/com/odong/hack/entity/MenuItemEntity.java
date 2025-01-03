@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity // JPA 엔터티로 선언
-@Table(name = "t_menu_info_ingred")
+@Table(name = "t_menu_info_img")
 public class MenuItemEntity {
 
     @Id
@@ -27,5 +27,8 @@ public class MenuItemEntity {
     private String info; // 설명
     @Column(name = "ingred")
     private String ingred; // 재료
-
+    @Column(name = "tokenized_info")
+    private String tokenizedInfo;
+    @Column(name = "img")
+    private String img;
 }
