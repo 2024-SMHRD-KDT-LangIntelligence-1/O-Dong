@@ -31,3 +31,36 @@
 .category-btn:focus {
   outline: none;
 }
+
+.result-item {
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.menu-name {
+  display: flex;
+  align-items: center; /* 수평 정렬 */
+  justify-content: space-between; /* 메뉴 이름과 아이콘을 양 끝에 배치 */
+}
+
+.menu-name h4 {
+  margin: 0;
+}
+
+.ingredients-icon {
+  margin-left: 10px; /* 메뉴 이름과 아이콘 간의 간격 */
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.ingredients {
+  margin-top: 5px;
+  color: #555;
+}
+
+.menu-info {
+  margin-top: 10px;
+  color: #777;
+}
