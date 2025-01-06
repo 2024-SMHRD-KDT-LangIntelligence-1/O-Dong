@@ -237,7 +237,7 @@ public class FlaskController {
             String sang1 = (String) requestData.get("sang1");
             String sang2 = (String) requestData.get("sang2");
 
-            String flaskUrl = "http://localhost:5001/sanggueon-only";
+            String flaskUrl = "http://127.0.0.1:5001/sanggueon-only";
             RestTemplate restTemplate = new RestTemplate();
 
             ResponseEntity<Map> response = restTemplate.postForEntity(flaskUrl, requestData, Map.class);

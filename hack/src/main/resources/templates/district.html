@@ -618,12 +618,37 @@
                 var dongList = data.map(function (dong) {
                   return { name: dong }; // 동 이름만 저장
                 });
-
+                var sang1 = address;
+                var sang2 = dongList[0].name;
+                console.log(sang1, sang2);
                 var markerClusterer = new kakao.maps.MarkerClusterer({
                   map: map, // 클러스터러가 적용될 지도
                   averageCenter: true, // 클러스터의 중심을 평균 위치로 설정
                   minLevel: 10, // 최소 클러스터링 레벨 (여기서는 10 이하에서만 클러스터링)
                 });
+                async function sendOnly() {
+                  try {
+                    const response = await fetch("api/send-sanggueon-only", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({
+                        sang1: sang1,
+                        sang2: sang2,
+                      }),
+                    });
+                    if (!response.ok) {
+                      throw new Error("Error in server response");
+                    }
+                    const data = response.json();
+                    console.log("Response for 상권only", data);
+                  } catch (error) {
+                    console.error("Error sending 상권only", error);
+                  }
+                }
+                sendOnly();
+
                 // 동 리스트에 대한 마커 생성 코드
                 dongList.forEach(function (dong) {
                   // console.log("Searching address for:", dong.name);
@@ -651,6 +676,7 @@
                           infowindow.open(map, marker);
                         }
                       );
+
                       // infowindow.open(map, marker);
                       markerClusterer.addMarkers([marker]);
                     } else {
@@ -661,7 +687,9 @@
               })
               .catch((error) => {
                 console.log("Error:", error);
-                alert("현재 해당 상권에 대한 데이터가 없어 분석할 수 없습니다.");
+                alert(
+                  "현재 해당 상권에 대한 데이터가 없어 분석할 수 없습니다."
+                );
               });
 
             // .then((response) => {
@@ -831,8 +859,8 @@
             resultItem.innerHTML = `
                 <div class="menu-name">
                     <h4>${menuName}</h4>
-                    <span class="ingredients-icon" title="재료 보기"> 
-                       <img src="images/image.png" alt="재료 아이콘" 
+                    <span class="ingredients-icon" title="재료 보기">
+                       <img src="images/image.png" alt="재료 아이콘"
                        style="width: 50px; height: 50px;">
                         </span>
                 </div>
@@ -913,7 +941,7 @@
             chartmodal.style.visibility = "visible";
             chartmodal.style.opacity = "1";
             // receiveSanggueonGongtong();
-            sendOnly();
+            // sendOnly();
 
             async function sendGongTong() {
               try {
@@ -930,8 +958,12 @@
                   throw new Error("Error in server response");
                 }
                 const data = await response.json();
-                if(data.noDataDong.length!=0){
-                  alert("현재 선택하신 " + data.noDataDong[0]+"에 대한 메뉴 데이터가 존재하지 않습니다.");
+                if (data.noDataDong.length != 0) {
+                  alert(
+                    "현재 선택하신 " +
+                      data.noDataDong[0] +
+                      "에 대한 메뉴 데이터가 존재하지 않습니다."
+                  );
                 }
                 drawCommonMenuChart(data); // 첫 번째 차트
                 drawComparisonChart(data); // 두 번째 차트
@@ -955,8 +987,12 @@
                 }
                 const data = await response.json();
 
-                if(data.noDataDong.length!=0){
-                  alert("현재 선택하신 " + data.noDataDong[0]+"에 대한 메뉴 데이터가 존재하지 않습니다.");
+                if (data.noDataDong.length != 0) {
+                  alert(
+                    "현재 선택하신 " +
+                      data.noDataDong[0] +
+                      "에 대한 메뉴 데이터가 존재하지 않습니다."
+                  );
                 }
 
                 console.log("Response for 상권only", data);
@@ -988,12 +1024,12 @@
               menuCard.classList.add("menu-card");
 
               menuCard.innerHTML = `
-                        <img src="/images/${similarMenu}.jpg" alt="${similarMenu}" style="width: 200px; height: 150px; object-fit: cover;">
-                          <h3>${similarMenu}</h3>
-                          <p>추천 메뉴: ${resolvedData.menu}</p>
-                          <button class="info-btn">?</button>
-                          <div class="detail-popup"></div>
-                      `;
+                              <img src="/images/${similarMenu}.jpg" alt="${similarMenu}" style="width: 200px; height: 150px; object-fit: cover;">
+                                <h3>${similarMenu}</h3>
+                                <p>추천 메뉴: ${resolvedData.menu}</p>
+                                <button class="info-btn">?</button>
+                                <div class="detail-popup"></div>
+                            `;
 
               popupContent.appendChild(menuCard);
 
