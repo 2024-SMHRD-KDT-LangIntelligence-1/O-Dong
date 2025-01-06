@@ -219,7 +219,7 @@ function createCircle(latlng) {
   currentCircle.setMap(map);
 
   kakao.maps.event.addListener(currentCircle, "click", function () {
-    alert("반경 500m 다각형 클릭됨!");
+    // alert("반경 500m 다각형 클릭됨!");
   });
 }
 

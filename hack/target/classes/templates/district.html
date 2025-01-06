@@ -898,6 +898,59 @@
     <!-- JavaScript -->
 
     <script>
+      // 플라스크-스프링 부트 연동 메소드
+      async function sendToFlaskController(path, bodyData){
+        try{
+          const response = await fetch(path,{
+            method:"POST",
+            headers:{
+              "Content-Type":"application/json",
+            },
+            body:JSON.stringify(bodyData),
+          });
+          if(!response.ok){
+            throw new Error("Error in server response");
+          }
+          const data = await response.json();
+          console.log(data);
+          return data;
+        }catch(error){
+          console.log(error);
+          return null;
+        }
+      }
+
+      // 유사 상권 탐색
+      document
+              .querySelector("#search-btn")
+              .addEventListener("click", ()=>{
+                yusaSanggueon();
+
+                async function yusaSanggueon(){
+                  const dong = document.querySelector("#search-location").value;
+                  const path = "api/send-yusa-dong";
+                  const bodyData = {"dong": dong};
+                  // yusaDongs
+                  // {"similarDongs": 해당 동과 유사한 상권 동 번호 리스트,
+                  //         "status": 전송 상태
+                  // }
+
+                  // async 메소드는 항상 Promise를 반환하므로 호출 시 await 사용해야함!!
+                  let yusaDongs = await sendToFlaskController(path, bodyData);
+
+                  let gongtongPath = "api/send-sanggueon-gongtong";
+                  let onlyPath = "api/send-sanggueon-only";
+
+                  for(let i = 0; i < yusaDongs.yusaDongName.length;i++){
+                    let gongtongBody = {"sang1":dong,"sang2":yusaDongs.yusaDongName[i]};
+                    let onlyBody = {"sang1":dong,"sang2":yusaDongs.yusaDongName[i]};
+
+                    let gongtongData = await sendToFlaskController(gongtongPath, gongtongBody);
+                    let onlyData = await sendToFlaskController(onlyPath, onlyBody);
+                  }
+                }
+
+              });
       document.addEventListener("DOMContentLoaded", () => {
         document
           .querySelector("#analyze-button")
