@@ -35,6 +35,7 @@ kakao.maps.event.addListener(map, "click", async function (mouseEvent) {
     currentMarker.setMap(null);
   }
 
+
   // 새로운 마커 생성
   currentMarker = new kakao.maps.Marker({
     position: latlng,
@@ -53,6 +54,7 @@ kakao.maps.event.addListener(map, "click", async function (mouseEvent) {
   var infowindow = new kakao.maps.InfoWindow({
     content: `<div style="padding:5px;">클릭한 위치<br>${lat}, ${lng}</div>`,
   });
+
   kakao.maps.event.addListener(currentMarker, "click", function () {
     infowindow.open(map, currentMarker);
   });

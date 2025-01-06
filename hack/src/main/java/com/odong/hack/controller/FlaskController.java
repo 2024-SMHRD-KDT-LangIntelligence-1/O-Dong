@@ -272,12 +272,37 @@ public class FlaskController {
 
             Map<String, Object> response = new HashMap<>();
             response.put("status", "success");
+            response.put("sang1", sang1);
+            response.put("sang2", sang2);
+            response.put("onlyMenus", onlyMenus);
+            response.put("sang1MenuCnt", sang1MenuCnt);
+            response.put("sang2MenuCnt", sang2MenuCnt);
+            response.put("menuInfo", menuInfo);
+            response.put("menuIngred", menuIngred);
             response.put("message", "데이터 전송 성공");
             return ResponseEntity.ok(response);
         } else {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("status", status);
             errorResponse.put("message", "데이터 전송 실패");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+    @PostMapping("/send-yusa-dong")
+    public ResponseEntity<Map<String, Object>> sendDong(@RequestBody Map<String, Object> requestData) {
+        try{
+            String dong = (String) requestData.get("dong");
+
+            String flaskUrl = "http://localhost:5001/yusa-dong-search";
+            RestTemplate restTemplate = new RestTemplate();
+
+            ResponseEntity<Map> response = restTemplate.postForEntity(flaskUrl, requestData, Map.class);
+            Map<String, Object> flaskResponse = response.getBody();
+            return ResponseEntity.ok(flaskResponse);
+        }catch(Exception e){
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("status", "플라스크 서버에 연결하지 못했습니다.");
+            errorResponse.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }

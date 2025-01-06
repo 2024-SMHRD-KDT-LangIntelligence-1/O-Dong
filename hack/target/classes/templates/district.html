@@ -576,7 +576,7 @@
             const lng = result[0].x;
 
             // 첫 번째 요청: 좌표 데이터를 Flask 서버로 전송
-            fetch("http://127.0.0.1:5001/send-coordinates", {
+            fetch("http://localhost:5001/send-coordinates", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -659,7 +659,11 @@
                   });
                 });
               })
-              .catch((error) => console.error("Error:", error));
+              .catch((error) => {
+                console.log("Error:", error);
+                alert("현재 해당 상권에 대한 데이터가 없어 분석할 수 없습니다.");
+              });
+
             // .then((response) => {
             //   return response.text(); // JSON이 아닌 HTML일 수도 있으므로 text로 먼저 받음
             // })
@@ -926,6 +930,9 @@
                   throw new Error("Error in server response");
                 }
                 const data = await response.json();
+                if(data.noDataDong.length!=0){
+                  alert("현재 선택하신 " + data.noDataDong[0]+"에 대한 메뉴 데이터가 존재하지 않습니다.");
+                }
                 drawCommonMenuChart(data); // 첫 번째 차트
                 drawComparisonChart(data); // 두 번째 차트
                 console.log(`Response for 상권 ${sang1} ${sang2}:`, data);
@@ -946,7 +953,12 @@
                 if (!response.ok) {
                   throw new Error("Error in server response");
                 }
-                const data = response.json();
+                const data = await response.json();
+
+                if(data.noDataDong.length!=0){
+                  alert("현재 선택하신 " + data.noDataDong[0]+"에 대한 메뉴 데이터가 존재하지 않습니다.");
+                }
+
                 console.log("Response for 상권only", data);
               } catch (error) {
                 console.error("Error sending 상권only", error);
