@@ -723,6 +723,7 @@
             }
 
             const data = await response.json();
+            console.log(data);
             // displayResults(data);
           } else {
             alert("키워드를 입력해주세요.");
@@ -915,101 +916,132 @@
         });
       });
 
+      // 플라스크-스프링 부트 연동 메소드
+      async function sendToFlaskController(path, bodyData){
+        try{
+          const response = await fetch(path,{
+            method:"POST",
+            headers:{
+              "Content-Type":"application/json",
+            },
+            body:JSON.stringify(bodyData),
+          });
+          if(!response.ok){
+            throw new Error("Error in server response");
+          }
+          const data = await response.json();
+          console.log(data);
+          return data;
+        }catch(error){
+          console.log(error);
+          return null;
+        }
+      }
+
+      // 유사 상권 탐색
+      document
+              .querySelector("#search-btn")
+              .addEventListener("click", ()=>{
+                yusaSanggueon();
+
+                async function yusaSanggueon(){
+                  const dong = document.querySelector("#search-location").value;
+                  const path = "api/send-yusa-dong";
+                  const bodyData = {"dong": dong};
+                  // yusaDongs
+                  // {"similarDongs": 해당 동과 유사한 상권 동 번호 리스트,
+                  //         "status": 전송 상태
+                  // }
+
+                  // async 메소드는 항상 Promise를 반환하므로 호출 시 await 사용해야함!!
+                  let yusaDongs = await sendToFlaskController(path, bodyData);
+
+                  let gongtongPath = "api/send-sanggueon-gongtong";
+                  let onlyPath = "api/send-sanggueon-only";
+
+                  for(let i = 0; i < yusaDongs.yusaDongNum.length;i++){
+                    let gongtongBody = {"sang1":dong,"sang2":yusaDongs.yusaDongNum[i]};
+                    let onlyBody = {"sang1":dong,"sang2":yusaDongs.yusaDongNum[i]};
+
+                    let gongtongData = await sendToFlaskController(gongtongPath, gongtongBody);
+                    let onlyData = await sendToFlaskController(onlyPath, onlyBody);
+                  }
+                }
+              });
+      // 두 상권 공통, 비공통 메뉴
       document
               .querySelector("#analyze-button")
               .addEventListener("click",()=>{
-                const sang1 = document.querySelector("#dsearch-location").value;
-                const sang2 = document.querySelector("#another-search-location").value;
+                compareSanggueon();
 
-                sendGongTong();
-                sendOnly();
+                async function compareSanggueon(){
+                  const sang1 = document.querySelector("#dsearch-location").value;
+                  const sang2 = document.querySelector("#another-search-location").value;
 
-                async function sendGongTong(){
-                  try{
-                    const response = await fetch("/api/send-sanggueon-gongtong",{
-                      method: "POST",
-                      headers:{
-                        "Content-Type":"application/json",
-                      },
-                      body:JSON.stringify({sang1:sang1,sang2:sang2}),
-                    });
-                    console.log(sang1+" / "+sang2);
+                  let gongtongPath = "/api/send-sanggueon-gongtong";
+                  let onlyPath = "api/send-sanggueon-only";
 
-                    if(!response.ok){
-                      throw new Error("Error in server response")
-                    }
-                    const data = response.json();
-                    console.log(`Response for 상권 ${sang1}:`, data);
-                  }catch (error) {
-                    console.error(`Error sending 상권 ${sang1}:`, error);
-                  }
-                }
+                  let gongtongBody = {"sang1":sang1, "sang2":sang2};
+                  let onlyBody = {"sang1":sang1, "sang2":sang2};
 
-                async function sendOnly(){
-                  try{
-                    const response = await fetch("api/send-sanggueon-only",{
-                      method:"POST",
-                      headers:{
-                        "Content-Type":"application/json",
-                      },
-                      body:JSON.stringify({sang1:sang1,sang2:sang2}),
-                    });
-                    if(!response.ok){
-                      throw new Error("Error in server response");
-                    }
-                    const data = response.json();
-                    console.log("Response for 상권only", data);
-                  }catch(error){
-                    console.error("Error sending 상권only", error);
-                  }
+                  // gongtongData
+                  //   {"status":전송 상태,
+                  //   "gongtongMenus" : 두 상권 공통 메뉴 리스트,
+                  //   "sang1" : 비교 상권 1,
+                  //   "sang2":비교 상권 2,
+                  //   "sang1MenuCnt":상권 1에서 n번째 공통 메뉴가 등장한 횟수,
+                  //   "sang2MenuCnt":상권 2에서 n번째 공통 메뉴가 등장한 횟수,
+                  //   "menuInfo": n번째 공통 메뉴의 설명,
+                  //   "menuIngred":n번째 공통 메뉴의 재료
+                  // }
+                  let gongtongData = await sendToFlaskController(gongtongPath, gongtongBody);
+                  console.log(`test:${gongtongData}`);
+                  // onlyData
+                  //  {"status":전송 상태,
+                  //   "onlyMenus":비교 상권 2에는 많지만, 1에는 적은 메뉴 리스트,
+                  //   "sang1":비교 상권 1,
+                  //   "sang2":비교 상권 2,
+                  //   "sang1MenuCnt": n번째 메뉴가 상권 1에 등장한 횟수,
+                  //   "sang2MenuCnt": n번째 메뉴가 상권 2에 등장한 횟수,
+                  //   "menuInfo": n번째 메뉴의 설명,
+                  //   "menuIngred": n번째 메뉴의 재료
+                  // }
+                  let onlyData = await sendToFlaskController(onlyPath, onlyBody);
                 }
               })
 
+      // 유사 메뉴 추천
       document
-        .getElementById("Canalyzebutton")
+        .querySelector("#Canalyzebutton")
         .addEventListener("click", () => {
-          const selectedMenus = document.querySelectorAll(
-            ".toggle-btn.selected"
-          );
+          yusaMenuRecommand();
 
-          async function sendMenus() {
-            for (let i = 0; i < selectedMenus.length; i++) {
-              try {
-                const response = await fetch(`/api/send-menu`, {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({
-                    menu: selectedMenus.item(i).innerText,
-                  }),
-                });
-                console.log(selectedMenus.item(i).innerText);
-                if (!response.ok) {
-                  throw new Error("Error in server response");
-                }
+          async function yusaMenuRecommand(){
+            const selectedMenus = document.querySelectorAll(
+                    ".toggle-btn.selected"
+            );
+            let path = "/api/send-menu";
+            let bodyData = {"menu":""};
 
-                const data = response.json();
-                console.log(
-                  `Response for menu ${selectedMenus.item(i).innerText}:`,
-                  data
-                );
-              } catch (error) {
-                console.error(
-                  `Error sending menu ${selectedMenus.item(i).innerText}:`,
-                  error
-                );
-              }
+            for(let i = 0; i < selectedMenus.length;i++){
+              bodyData.menu = selectedMenus[i].innerText;
+              //yusaMenu
+              //   {"status":전송상태,
+              //   "similarMenus": 메뉴와 유사한 메뉴 리스트,
+              //   "menu": 선택한 메뉴 이름,
+              //   "changeMenu" : 만약 선택한 메뉴가 db에 없을 경우 대체되는 이름이 유사한 메뉴,
+              //   "menuInfo": 유사한 n번째 메뉴 설명,
+              //   "menuIngred": 유사한 n번째 메뉴의 재료
+              // }
+              let yusaMenu = await sendToFlaskController(path, bodyData);
+            }
+            const menuWrapper = document.getElementById("menuWrapper");
+
+            if (!menuWrapper) {
+              console.error("menuWrapper 요소를 찾을 수 없습니다.");
+              return;
             }
           }
-          sendMenus();
-          const menuWrapper = document.getElementById("menuWrapper");
-
-          if (!menuWrapper) {
-            console.error("menuWrapper 요소를 찾을 수 없습니다.");
-            return;
-          }
-
           // display 스타일을 토글
           if (
             menuWrapper.style.display === "none" ||
@@ -1020,6 +1052,8 @@
             menuWrapper.style.display = "none"; // 팝업 닫기
           }
         });
+
+      // async function sendToFlask(flaskUrl, sendData1, sendData2)
     </script>
     <!-- <script>
       // 지도 검색 이벤트

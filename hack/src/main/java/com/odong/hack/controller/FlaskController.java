@@ -6,9 +6,11 @@ import com.odong.hack.service.CafeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +18,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api")
 public class FlaskController {
+    // receive-~ REST API : 스프링 플라스크 서버 연동 여부 확인
+    // send-~ REST API : 실제로 데이터를 주고 받는 플라스크 스프링 연동
 
     @Autowired
     private CafeService cafeService;
@@ -84,11 +88,6 @@ public class FlaskController {
             List<Map<String, Object>> menuInfo = (List<Map<String, Object>>) requestData.get("menuInfo");
             List<Map<String, Object>> menuIngred = (List<Map<String, Object>>) requestData.get("menuIngred");
 
-            System.out.println("입력 키워드: " + keyword);
-            System.out.println("추천 메뉴 리스트: " + recommanded);
-            System.out.println("추천 메뉴 설명: " + menuInfo);
-            System.out.println("추천 메뉴 재료: " + menuIngred);
-
             // 응답 성공
             Map<String, Object> response = new HashMap<>();
             response.put("status", "success");
@@ -136,11 +135,6 @@ public class FlaskController {
             List<String> menuInfo = (List<String>)requestData.get("menuInfo");
             List<String> menuIngred = (List<String>)requestData.get("menuIngred");
 
-            System.out.println("입력 메뉴: "+ menu);
-            System.out.println("유사 메뉴: "+similarMenus);
-            System.out.println("유사 메뉴 설명: "+menuInfo);
-            System.out.println("유사 메뉴 재료: "+menuIngred);
-
             Map<String, Object> response = new HashMap<>();
             response.put("status", "success");
             response.put("message", "데이터 전송 성공");
@@ -173,25 +167,20 @@ public class FlaskController {
         }
     }
 
+    @CrossOrigin(origins="*")
     @PostMapping("/receive-sanggueon-gongtong")
-    public ResponseEntity<Map<String, Object>> receiveSanggueonGongtong(@RequestBody Map<String, Object> requestData) {
+    public ResponseEntity<Map<String, Object>> receiveSanggueonGongtong(@RequestBody Map<String, Object> requestData, Model model) {
         String status = (String) requestData.get("status");
         if(status.equals("success")) {
             String sang1 = (String) requestData.get("sang1");
             String sang2 = (String) requestData.get("sang2");
 
-            List<String> gongtongMenus = (List<String>)requestData.get("gongtongMenus");
+            List<String> gongtongMenus = (List<String>)requestData.getOrDefault("gongtongMenus", new ArrayList<>());
             List<String> menuInfo = (List<String>)requestData.get("menuInfo");
             List<String> menuIngred = (List<String>)requestData.get("menuIngred");
             List<Integer> sang1MenuCnt = (List<Integer>)requestData.get("sang1MenuCnt");
             List<Integer> sang2MenuCnt = (List<Integer>)requestData.get("sang2MenuCnt");
 
-            System.out.println("상권1 :"+sang1+" / 상권2 :"+sang2);
-            System.out.println("공통 메뉴: "+gongtongMenus);
-            System.out.println("공통 메뉴 설명: " + menuInfo);
-            System.out.println("공통 메뉴 재료: " + menuIngred);
-            System.out.println("상권 1에서 공통 메뉴 비율: "+sang1MenuCnt);
-            System.out.println("상권 2에서 공통 메뉴 비율: "+sang2MenuCnt);
 
             Map<String, Object> response = new HashMap<>();
             response.put("status", "success");
@@ -237,13 +226,6 @@ public class FlaskController {
             List<String> menuInfo = (List<String>)requestData.get("menuInfo");
             List<String> menuIngred = (List<String>)requestData.get("menuIngred");
 
-            System.out.println(String.format("상권1: %s, 상권2: %s", sang1, sang2));
-            System.out.println(String.format("상권 2에만 많은 메뉴: %s",onlyMenus));
-            System.out.println(String.format("상권 1에서 판매되는 수: %s",sang1MenuCnt));
-            System.out.println(String.format("상권 1에서 판매되는 수: %s",sang2MenuCnt));
-            System.out.println(String.format("메뉴 설명: %s",menuInfo));
-            System.out.println(String.format("메뉴 재료: %s",menuIngred));
-
             Map<String, Object> response = new HashMap<>();
             response.put("status", "success");
             response.put("message", "데이터 전송 성공");
@@ -252,6 +234,25 @@ public class FlaskController {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("status", status);
             errorResponse.put("message", "데이터 전송 실패");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+    @PostMapping("/send-yusa-dong")
+    public ResponseEntity<Map<String, Object>> sendDong(@RequestBody Map<String, Object> requestData) {
+        try{
+            String dong = (String) requestData.get("dong");
+
+            String flaskUrl = "http://localhost:5001/yusa-dong-search";
+            RestTemplate restTemplate = new RestTemplate();
+
+            ResponseEntity<Map> response = restTemplate.postForEntity(flaskUrl, requestData, Map.class);
+            Map<String, Object> flaskResponse = response.getBody();
+            return ResponseEntity.ok(flaskResponse);
+        }catch(Exception e){
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("status", "플라스크 서버에 연결하지 못했습니다.");
+            errorResponse.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
