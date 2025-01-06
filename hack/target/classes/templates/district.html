@@ -407,19 +407,20 @@
     </div>
     <div id="chartmodal-modal" class="chartmodal" style="display: none">
       <div class="chartmodal-content">
-        <span class="chartmodal-close-button">&times;</span>
         <h3>상권 비교 분석</h3>
+        <span class="chartmodal-close-button">&times;</span>
         <!-- 차트 캔버스 -->
         <!-- 차트 캔버스 -->
         <div
           class="chart-container"
-          style="width: 80%; height: 400px; margin: auto"
+          style="width: 80%; height: 800px; margin: auto"
         >
           <canvas id="chartmodal-myChart1"></canvas>
         </div>
+        <br /><br /><br />
         <div
           class="chart-container"
-          style="width: 80%; height: 400px; margin: auto"
+          style="width: 80%; height: 800px; margin: auto"
         >
           <canvas id="chartmodal-myChart2"></canvas>
         </div>
@@ -553,8 +554,13 @@
             const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
 
             // 지도의 중심을 새 좌표로 설정
-            map.setCenter(coords);
-            map.setLevel(12);
+            if (addressInputId == "search-btn2") {
+              map.setCenter(coords);
+              map.setLevel(3);
+            } else {
+              map.setCenter(coords);
+              map.setLevel(12);
+            }
 
             // 기존 마커가 있으면 지도에서 제거
             if (currentMarker) currentMarker.setMap(null);
@@ -570,7 +576,7 @@
             const lng = result[0].x;
 
             // 첫 번째 요청: 좌표 데이터를 Flask 서버로 전송
-            fetch("http://192.168.219.108:5001/send-coordinates", {
+            fetch("http://127.0.0.1:5001/send-coordinates", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -585,7 +591,7 @@
               })
               .then((data) => {
                 console.log("Response from Flask (coordinates):", data); // 여기서 `data` 값을 확인
-                if (!data || !data.yusadongs) {
+                if (!data || !data.similarDongs) {
                   throw new Error("No 'similarDongs' in the response.");
                 }
 
@@ -596,7 +602,7 @@
                     "Content-Type": "application/json",
                   },
                   body: JSON.stringify({
-                    similarDongs: data.yusadongs, // 첫 번째 요청 응답에서 받은 데이터 사용
+                    similarDongs: data.similarDongs, // 첫 번째 요청 응답에서 받은 데이터 사용
                   }),
                 });
               })

@@ -1,6 +1,8 @@
 package com.odong.hack.entity;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,44 +20,38 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity // JPA 엔터티로 선언
-@Table(name = "t_menu_slice_1")
+@Table(name = "t_cafe_menu")
 public class MenuEntity {
-
-    // @Column(name = "menu_idx")
-    // private Long menuIdx;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "cafe_idx", nullable = false)
-    private int cafeIdx;
+    @Column(name = "cafe_menu_idx")
+    private Integer cafeMenuIdx;
 
-    @Column(name = "menu_nm", nullable = false)
-    private String menuNm;
+    // @Column(name = "cafe_idx", nullable = false)
+    // private Integer cafeIdx;
 
-    @Column(name = "menu_price", nullable = false)
-    private int menuPrice;
+    @Column(name = "menu_nm", length = 300, nullable = false)
+    private String menuName;
 
-    // @Column(name = "menu_img")
-    // private String menuImg;
+    @Column(name = "menu_price", precision = 10, scale = 0, nullable = true)
+    private BigDecimal menuPrice;
 
-    // @Column(name = "menu_ingredients")
-    // private String menuIngredients;
-
-    // @Column(name = "created_at", nullable = false)
-    // private Timestamp createdAt;
-
-    @Column(name = "dong")
+    @Column(name = "dong", length = 100, nullable = false)
     private String dong;
 
-    @Column(name = "menu_keyword")
-    private String menuKeyword;
-
-    @Column(name = "1st_category")
+    @Column(name = "first_category", length = 300, nullable = false)
     private String firstCategory;
 
-    @Column(name = "2nd_category")
+    @Column(name = "second_category", length = 300, nullable = true)
     private String secondCategory;
 
+    @Column(name = "menu_keyword", length = 300, nullable = true)
+    private String menuKeyword;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
     @ManyToOne
-    @JoinColumn(name = "cafe_id")
+    @JoinColumn(name = "cafe_idx", nullable = false) // CafeEntity의 cafeIdx와 연결
     private CafeEntity cafe;
 }

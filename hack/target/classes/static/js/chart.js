@@ -36,11 +36,28 @@ function drawCommonMenuChart(data) {
     },
     options: {
       responsive: true,
+      plugins: {
+        legend: {
+          labels: {
+            font: {
+              size: 16, // 범례 폰트 크기
+            },
+          },
+        },
+      },
       scales: {
         x: {
           title: {
             display: true,
             text: "공통 메뉴",
+            font: {
+              size: 14, // X축 제목 폰트 크기
+            },
+          },
+          ticks: {
+            font: {
+              size: 12, // X축 레이블 폰트 크기
+            },
           },
         },
         y: {
@@ -48,6 +65,14 @@ function drawCommonMenuChart(data) {
           title: {
             display: true,
             text: "언급 빈도 합계",
+            font: {
+              size: 14, // Y축 제목 폰트 크기
+            },
+          },
+          ticks: {
+            font: {
+              size: 12, // Y축 레이블 폰트 크기
+            },
           },
         },
       },
@@ -64,7 +89,7 @@ function drawComparisonChart(data) {
   }
 
   const ctx = canvas.getContext("2d");
-
+  ctx.font = "30px Arial";
   new Chart(ctx, {
     type: "bar",
     data: {
@@ -88,11 +113,28 @@ function drawComparisonChart(data) {
     },
     options: {
       responsive: true,
+      plugins: {
+        legend: {
+          labels: {
+            font: {
+              size: 16, // 범례 폰트 크기
+            },
+          },
+        },
+      },
       scales: {
         x: {
           title: {
             display: true,
             text: "공통 메뉴",
+            font: {
+              size: 14, // X축 제목 폰트 크기
+            },
+          },
+          ticks: {
+            font: {
+              size: 12, // X축 레이블 폰트 크기
+            },
           },
         },
         y: {
@@ -100,9 +142,42 @@ function drawComparisonChart(data) {
           title: {
             display: true,
             text: "언급 빈도",
+            font: {
+              size: 14, // Y축 제목 폰트 크기
+            },
+          },
+          ticks: {
+            font: {
+              size: 12, // Y축 레이블 폰트 크기
+            },
           },
         },
       },
     },
   });
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  const modal = document.querySelector(".chartmodal");
+  const closeButton = document.querySelector(".chartmodal-close-button");
+
+  // 모달 열기 예제 (선택 사항)
+  function openModal() {
+    modal.style.display = "block";
+  }
+
+  // 닫기 버튼 클릭 시 모달 닫기
+  closeButton.addEventListener("click", function () {
+    modal.style.display = "none";
+  });
+
+  // 모달 외부 클릭 시 모달 닫기
+  window.addEventListener("click", function (event) {
+    if (event.target === modal) {
+      modal.style.display = "none";
+    }
+  });
+
+  // 필요하면 모달 열기 호출
+  // openModal();
+});
