@@ -287,3 +287,113 @@ body {
 .explain-btn:hover + .tooltip {
   display: block; /* 호버 시 툴팁 표시 */
 }
+
+/* 재료 목록 숨기기 */
+.ingredients {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  color: black;
+  padding: 10px;
+  border-radius: 0 0 8px 8px;
+  opacity: 0;
+  transform: translateY(100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  font-size: 14px;
+}
+
+/* 호버 시 재료 목록 표시 */
+.menu-card:hover .ingredients {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* 모달 기본 스타일 */
+.recommandedmodal {
+  display: block; /* 기본적으로 모달을 보이게 설정 */
+  position: fixed;
+  z-index: 100; /* 화면 위에 표시 */
+  left: -17.2%;
+  top: 7.8%;
+  width: 60%;
+  height: 50%;
+  overflow: auto;
+}
+
+/* 모달 내용 스타일 */
+.modal-content {
+  background-color: #fff;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 400px;
+  border-radius: 10px;
+}
+
+/* 닫기 버튼 스타일 */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* 제목 스타일 (추천 동 제목을 강조) */
+.modal-content h3 {
+  color: #4caf50;
+  font-size: 24px;
+  text-align: center;
+}
+
+/* 동 이름 리스트 스타일 */
+#dongListModal {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#dongListModal li {
+  padding: 10px;
+  margin: 8px 0;
+  font-size: 18px;
+  color: #333;
+  font-weight: bold;
+  border-bottom: 2px solid #ddd; /* 각 동 이름 아래에 선 추가 */
+}
+
+#dongListModal li:last-child {
+  border-bottom: none; /* 마지막 항목에는 선을 추가하지 않음 */
+}
+
+/* 기본적으로 재료 정보를 숨깁니다 */
+.ingredients-info {
+  display: none;
+  margin-top: 10px;
+  color: #333;
+  font-size: 14px;
+}
+
+/* 아이콘에 호버하면 재료 정보가 보이도록 */
+.ingredient-icon:hover + .ingredients-info {
+  display: block; /* 호버 시 .ingredient-info를 보이게 설정 */
+}
+
+/* 메뉴 이름 스타일 */
+.menu-name {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ingredients-icon {
+  cursor: pointer; /* 아이콘에 커서가 올라갔을 때 포인터로 변경 */
+}
