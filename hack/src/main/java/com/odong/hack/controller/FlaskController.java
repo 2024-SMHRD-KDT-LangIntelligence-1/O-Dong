@@ -24,7 +24,7 @@ public class FlaskController {
 
     @PostMapping("/send")
     public ResponseEntity<String> sendDataToFlask(@RequestBody String inputData) {
-        String flaskUrl = "http://192.168.219.108:5001/process"; // 플라스크 서버 URL
+        String flaskUrl = "http://localhost:5001/process"; // 플라스크 서버 URL
 
         // 요청 데이터 생성(카카오 api의 위도 경도 json 전송 형식)
         String requestBody = "{ \"input_data\": \"" + inputData + "\" }";
@@ -55,7 +55,7 @@ public class FlaskController {
         try {
             String keyword = requestData.get("keyword");
 
-            String flaskUrl = "http://127.0.0.1:5001/analyze-keyword";
+            String flaskUrl = "http://localhost:5001/analyze-keyword";
             RestTemplate restTemplate = new RestTemplate();
 
             // Flask로 요청 데이터 전송
@@ -124,7 +124,7 @@ public class FlaskController {
         try {
             String menu = (String) requestData.get("menu");
 
-            String flaskUrl = "http://127.0.0.1:5001/analyze-menu";
+            String flaskUrl = "http://localhost:5001/analyze-menu";
             RestTemplate restTemplate = new RestTemplate();
 
             // Flask로 요청 데이터 전송
@@ -178,7 +178,7 @@ public class FlaskController {
             String sang1 = (String) requestData.get("sang1");
             String sang2 = (String) requestData.get("sang2");
 
-            String flaskUrl = "http://127.0.0.1:5001/sanggueon-gongtong";
+            String flaskUrl = "http://localhost:5001/sanggueon-gongtong";
             RestTemplate restTemplate = new RestTemplate();
 
             ResponseEntity<Map> response = restTemplate.postForEntity(flaskUrl, requestData, Map.class);

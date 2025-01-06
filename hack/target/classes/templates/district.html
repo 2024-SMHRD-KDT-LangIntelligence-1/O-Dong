@@ -570,7 +570,7 @@
             const lng = result[0].x;
 
             // 첫 번째 요청: 좌표 데이터를 Flask 서버로 전송
-            fetch("http://192.168.219.108:5001/send-coordinates", {
+            fetch("http://localhost:5001/send-coordinates", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
