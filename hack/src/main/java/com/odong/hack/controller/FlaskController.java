@@ -45,7 +45,7 @@ public class FlaskController {
         List<String> regionNumbers = request.getSimilarDongs(); // 클라이언트에서 받은 법정동 코드 리스트
         // System.out.println(regionNumbers);
         List<String> dongNames = cafeService.getDongNamesByRegionNumbers(regionNumbers); // 동 코드에
-        // System.out.println(dongNames);
+        System.out.println(dongNames);
         return ResponseEntity.ok(dongNames); // 법정동 이름 리스트 응답
     }
 

@@ -61,6 +61,6 @@ public class CafeService {
         } else {
             System.out.println("Received region numbers: " + regionNumbers);
         }
-        return regionRepo.findDongNamesByRegionNumbers(regionNumbers);
+        return regionNumbers;
     }
 }
