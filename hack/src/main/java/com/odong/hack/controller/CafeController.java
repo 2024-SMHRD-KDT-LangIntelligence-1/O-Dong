@@ -34,4 +34,5 @@ public class CafeController {
     public List<String> search(String dong) {
         return cafeService.searchExactDong(dong);
     }
+
 }
