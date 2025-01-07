@@ -2,22 +2,31 @@
 const toggleButtons = document.querySelectorAll(".toggle-btn");
 
 // 버튼 클릭 시 선택/해제
-document.querySelectorAll(".menu-category").forEach((category) => {
-  category.addEventListener("click", (event) => {
-    const button = event.target;
-    if (button.classList.contains("toggle-btn")) {
-      // 같은 카테고리 내 다른 버튼 선택 해제
-      category.querySelectorAll(".toggle-btn").forEach((btn) => {
-        btn.classList.remove("selected");
-      });
-      // 클릭한 버튼 선택
-      button.classList.add("selected");
-    }
-  });
-});
+// document.querySelectorAll(".menu-category").forEach((category) => {
+//   category.addEventListener("click", (event) => {
+//     const button = event.target;
+//     if (button.classList.contains("toggle-btn")) {
+//       // 같은 카테고리 내 다른 버튼 선택 해제
+//       category.querySelectorAll(".toggle-btn").forEach((btn) => {
+//         btn.classList.remove("selected");
+//       });
+//       // 클릭한 버튼 선택
+//       button.classList.add("selected");
+//     }
+//   });
+// });
+// toggleButtons.forEach((button) => {
+//   button.addEventListener("click", () => {
+//     button.classList.toggle("selected");
+//   });
+// });
 toggleButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    button.classList.toggle("selected");
+    // 모든 버튼의 'selected' 클래스 제거
+    toggleButtons.forEach((btn) => btn.classList.remove("selected"));
+
+    // 클릭한 버튼에 'selected' 클래스 추가
+    button.classList.add("selected");
   });
 });
 

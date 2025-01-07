@@ -38,7 +38,7 @@ public class AuthController {
         session.setAttribute("member", enti);
         System.out.println(session.getAttribute("member"));
 
-        return "redirect:/";
+        return "district";
     }
 
     @GetMapping("/signup")

@@ -5,11 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.sql.Timestamp;
 
+import jakarta.persistence.Id;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthVO {
 
+    @Id
     private String user_id;
 
     // 회원 비밀번호
