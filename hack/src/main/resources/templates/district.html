@@ -47,7 +47,7 @@
             상권 직접 비교
           </button>
           <button id="opensang2" class="category-btn" data-category="district2">
-            상권 유사도 기반 비교
+            유사 상권
           </button>
           <button id="openkey" class="category-btn" data-category="keyword">
             키워드 분석
@@ -62,7 +62,7 @@
 
       <div id="re-popup" class="rpopup">
         <div class="rpop-header">
-          <h2>추천 고려메뉴</h2>
+          <h2>상권 고려메뉴</h2>
           <div class="arrow-container">
             <button id="left-arrow" class="arrow left-arrow">&lt;</button>
             <button
@@ -308,8 +308,7 @@
           </div>
         </div>
 
-        <!-- 케이크류 -->
-        <div class="menu-category cake">
+        <!-- <div class="menu-category cake">
           <h3>케이크류</h3>
           <div class="menu-item">
             <button class="toggle-btn" data-menu="뉴욕 치즈케이크">
@@ -329,7 +328,7 @@
               레몬 타르트
             </button>
           </div>
-        </div>
+        </div> -->
 
         <!-- 빵류 -->
         <div class="menu-category bread">
@@ -422,10 +421,31 @@
         <!-- 차트 캔버스 -->
         <div
           class="chart-container"
-          style="width: 80%; height: 800px; margin: auto"
+          style="
+            width: 80%;
+            height: 800px;
+            position: relative;
+            margin: auto;
+            text-align: center;
+          "
         >
-          <canvas id="chartmodal-myChart1"></canvas>
+          <canvas
+            id="chartmodal-myChart1"
+            style="
+              display: block; /* 캔버스를 블록 요소로 설정 */
+              margin: 0 auto; /* 중앙 정렬 */
+            "
+          ></canvas>
         </div>
+        <div
+          id="chartDescription"
+          style="
+            display: block; /* 블록 요소로 변경 */
+            margin: 10px auto 0; /* 자동 중앙 정렬 */
+            font-size: 14px;
+            color: #555;
+          "
+        ></div>
         <br /><br /><br />
         <div
           class="chart-container"
@@ -879,7 +899,7 @@
                 <div class="menu-name">
                     <h4>${menuName}</h4>
                     <span class="ingredients-icon" title="재료 보기"> 
-                       <img src="images/image.png" alt="재료 아이콘" 
+                       <img src="/images/image.png" alt="재료 아이콘" 
                        style="width: 50px; height: 50px;">
                         </span>
                 </div>
@@ -946,58 +966,61 @@
 
     <script>
       // 플라스크-스프링 부트 연동 메소드
-      async function sendToFlaskController(path, bodyData){
-        try{
-          const response = await fetch(path,{
-            method:"POST",
-            headers:{
-              "Content-Type":"application/json",
+      async function sendToFlaskController(path, bodyData) {
+        try {
+          const response = await fetch(path, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
             },
-            body:JSON.stringify(bodyData),
+            body: JSON.stringify(bodyData),
           });
-          if(!response.ok){
+          if (!response.ok) {
             throw new Error("Error in server response");
           }
           const data = await response.json();
           console.log(data);
           return data;
-        }catch(error){
+        } catch (error) {
           console.log(error);
           return null;
         }
       }
 
       // 유사 상권 탐색
-      document
-              .querySelector("#search-btn")
-              .addEventListener("click", ()=>{
-                yusaSanggueon();
+      document.querySelector("#search-btn").addEventListener("click", () => {
+        yusaSanggueon();
 
-                async function yusaSanggueon(){
-                  const dong = document.querySelector("#search-location").value;
-                  const path = "api/send-yusa-dong";
-                  const bodyData = {"dong": dong};
-                  // yusaDongs
-                  // {"similarDongs": 해당 동과 유사한 상권 동 번호 리스트,
-                  //         "status": 전송 상태
-                  // }
+        async function yusaSanggueon() {
+          const dong = document.querySelector("#search-location").value;
+          const path = "api/send-yusa-dong";
+          const bodyData = { dong: dong };
+          // yusaDongs
+          // {"similarDongs": 해당 동과 유사한 상권 동 번호 리스트,
+          //         "status": 전송 상태
+          // }
 
-                  // async 메소드는 항상 Promise를 반환하므로 호출 시 await 사용해야함!!
-                  let yusaDongs = await sendToFlaskController(path, bodyData);
+          // async 메소드는 항상 Promise를 반환하므로 호출 시 await 사용해야함!!
+          let yusaDongs = await sendToFlaskController(path, bodyData);
 
-                  let gongtongPath = "api/send-sanggueon-gongtong";
-                  let onlyPath = "api/send-sanggueon-only";
+          let gongtongPath = "api/send-sanggueon-gongtong";
+          let onlyPath = "api/send-sanggueon-only";
 
-                  for(let i = 0; i < yusaDongs.yusaDongName.length;i++){
-                    let gongtongBody = {"sang1":dong,"sang2":yusaDongs.yusaDongName[i]};
-                    let onlyBody = {"sang1":dong,"sang2":yusaDongs.yusaDongName[i]};
+          for (let i = 0; i < yusaDongs.yusaDongName.length; i++) {
+            let gongtongBody = {
+              sang1: dong,
+              sang2: yusaDongs.yusaDongName[i],
+            };
+            let onlyBody = { sang1: dong, sang2: yusaDongs.yusaDongName[i] };
 
-                    let gongtongData = await sendToFlaskController(gongtongPath, gongtongBody);
-                    let onlyData = await sendToFlaskController(onlyPath, onlyBody);
-                  }
-                }
-
-              });
+            let gongtongData = await sendToFlaskController(
+              gongtongPath,
+              gongtongBody
+            );
+            let onlyData = await sendToFlaskController(onlyPath, onlyBody);
+          }
+        }
+      });
       document.addEventListener("DOMContentLoaded", () => {
         document
           .querySelector("#analyze-button")
