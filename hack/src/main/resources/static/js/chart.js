@@ -81,7 +81,83 @@
 // }
 
 // 두 번째 차트: 상권 직접 비교
-function drawComparisonChart(data) {
+// function drawComparisonChart(data) {
+//   const canvas = document.getElementById("chartmodal-myChart2");
+//   if (!canvas) {
+//     console.error("chartmodal-myChart2 canvas 요소를 찾을 수 없습니다.");
+//     return;
+//   }
+
+//   const ctx = canvas.getContext("2d");
+//   ctx.font = "30px Arial";
+//   new Chart(ctx, {
+//     type: "bar",
+//     data: {
+//       labels: data.gongtongMenus,
+//       datasets: [
+//         {
+//           label: data.sang1,
+//           data: data.sang1MenuCnt,
+//           backgroundColor: "rgba(54, 162, 235, 0.5)",
+//           borderColor: "rgba(54, 162, 235, 1)",
+//           borderWidth: 1,
+//         },
+//         {
+//           label: data.sang2,
+//           data: data.sang2MenuCnt,
+//           backgroundColor: "rgba(255, 99, 132, 0.5)",
+//           borderColor: "rgba(255, 99, 132, 1)",
+//           borderWidth: 1,
+//         },
+//       ],
+//     },
+//     options: {
+//       responsive: true,
+//       plugins: {
+//         legend: {
+//           labels: {
+//             font: {
+//               size: 16, // 범례 폰트 크기
+//             },
+//           },
+//         },
+//       },
+//       scales: {
+//         x: {
+//           title: {
+//             display: true,
+//             text: "공통 메뉴",
+//             font: {
+//               size: 14, // X축 제목 폰트 크기
+//             },
+//           },
+//           ticks: {
+//             font: {
+//               size: 12, // X축 레이블 폰트 크기
+//             },
+//           },
+//         },
+//         y: {
+//           beginAtZero: true,
+//           title: {
+//             display: true,
+//             text: "언급 빈도",
+//             font: {
+//               size: 14, // Y축 제목 폰트 크기
+//             },
+//           },
+//           ticks: {
+//             font: {
+//               size: 12, // Y축 레이블 폰트 크기
+//             },
+//           },
+//         },
+//       },
+//     },
+//   });
+// }
+
+function drawStackedChart(data) {
   const canvas = document.getElementById("chartmodal-myChart2");
   if (!canvas) {
     console.error("chartmodal-myChart2 canvas 요소를 찾을 수 없습니다.");
@@ -89,22 +165,21 @@ function drawComparisonChart(data) {
   }
 
   const ctx = canvas.getContext("2d");
-  ctx.font = "30px Arial";
   new Chart(ctx, {
     type: "bar",
     data: {
-      labels: data.gongtongMenus,
+      labels: data.onlyMenus, // X축 레이블로 onlyMenus 사용
       datasets: [
         {
           label: data.sang1,
-          data: data.sang1MenuCnt,
+          data: data.sang1MenuCnt, // 첫 번째 상권 데이터
           backgroundColor: "rgba(54, 162, 235, 0.5)",
           borderColor: "rgba(54, 162, 235, 1)",
           borderWidth: 1,
         },
         {
           label: data.sang2,
-          data: data.sang2MenuCnt,
+          data: data.sang2MenuCnt, // 두 번째 상권 데이터
           backgroundColor: "rgba(255, 99, 132, 0.5)",
           borderColor: "rgba(255, 99, 132, 1)",
           borderWidth: 1,
@@ -124,9 +199,10 @@ function drawComparisonChart(data) {
       },
       scales: {
         x: {
+          stacked: true, // x축 스택 활성화
           title: {
             display: true,
-            text: "공통 메뉴",
+            text: "메뉴",
             font: {
               size: 14, // X축 제목 폰트 크기
             },
@@ -138,10 +214,11 @@ function drawComparisonChart(data) {
           },
         },
         y: {
+          stacked: true, // y축 스택 활성화
           beginAtZero: true,
           title: {
             display: true,
-            text: "언급 빈도",
+            text: "주문 횟수",
             font: {
               size: 14, // Y축 제목 폰트 크기
             },

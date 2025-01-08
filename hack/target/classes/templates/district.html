@@ -1061,7 +1061,7 @@
                   );
                 }
                 drawCommonMenuChart(data); // 첫 번째 차트
-                drawComparisonChart(data); // 두 번째 차트
+                // drawComparisonChart(data); // 두 번째 차트
                 console.log(`Response for 상권 ${sang1} ${sang2}:`, data);
               } catch (error) {
                 console.error(`Error sending 상권 ${sang1}:`, error);
@@ -1091,6 +1091,7 @@
                 }
 
                 console.log("Response for 상권only", data);
+                drawStackedChart(data); // 두 번째 차트
               } catch (error) {
                 console.error("Error sending 상권only", error);
               }
