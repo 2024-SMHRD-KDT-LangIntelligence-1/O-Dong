@@ -234,6 +234,71 @@ function drawStackedChart(data) {
   });
 }
 
+function drawChart2(data) {
+  const canvas = document.getElementById("chartmodal-myChart2");
+  if (!canvas) {
+    console.error("chartmodal-myChart2 canvas 요소를 찾을 수 없습니다.");
+    return;
+  }
+
+  const ctx = canvas.getContext("2d");
+
+  const chart = new Chart(ctx, {
+    type: "bar", // 차트 타입을 'bar'로 설정
+    data: {
+      labels: data.onlyMenus, // Y축 데이터 (메뉴 이름)
+      datasets: [
+        {
+          label: data.sang1, // 첫 번째 데이터셋
+          data: data.sang1MenuCnt, // 상권1의 X축 데이터
+          backgroundColor: "rgba(54, 162, 235, 0.5)",
+          borderColor: "rgba(54, 162, 235, 1)",
+          borderWidth: 1, // 색상 설정
+        },
+        {
+          label: data.sang2, // 두 번째 데이터셋
+          data: data.sang2MenuCnt, // 상권2의 X축 데이터
+          backgroundColor: "rgba(255, 99, 132, 0.5)",
+          borderColor: "rgba(255, 99, 132, 1)",
+          borderWidth: 1, // 색상 설정
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: function (tooltipItem) {
+              return tooltipItem.dataset.label + ": " + tooltipItem.raw; // 툴팁 표시 형식
+            },
+          },
+        },
+        legend: {
+          display: true, // 범례 표시
+        },
+      },
+      scales: {
+        x: {
+          stacked: true, // X축 스택 활성화
+          title: {
+            display: true,
+            text: "주문 횟수", // X축 제목
+          },
+          beginAtZero: true, // X축의 시작을 0부터
+        },
+        y: {
+          stacked: true, // Y축 스택 활성화
+          title: {
+            display: true,
+            text: "메뉴", // Y축 제목
+          },
+        },
+      },
+      indexAxis: "y", // 가로형 차트로 변경
+    },
+  });
+}
 function drawCommonMenuChart(data) {
   // 데이터 유효성 검사
   if (!Array.isArray(data.sang1MenuCnt) || !Array.isArray(data.sang2MenuCnt)) {
