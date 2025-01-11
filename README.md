@@ -52,7 +52,9 @@ by 오동로켓단
 
 
 ---
-### 주요 기능
+### 시스템 아키텍처
+![image](https://github.com/user-attachments/assets/2445562f-b45d-4be4-b41e-0a1eab86d17c)
+
 
 
 ### 트러블 슈팅
