@@ -43,7 +43,7 @@ by 오동로켓단
 
 ---
 
-### 화면 구성
+### 🖥 화면 구성
 ![image](https://github.com/user-attachments/assets/ee11f59c-f17f-4e6c-aa97-8ba43d63bdc2)
 
 ![image](https://github.com/user-attachments/assets/6a434207-6382-4fa4-9b6a-e4cb2b2c2e73)
@@ -52,11 +52,11 @@ by 오동로켓단
 
 
 ---
-### 시스템 아키텍처
+### ⚙ 시스템 아키텍처
 ![image](https://github.com/user-attachments/assets/2445562f-b45d-4be4-b41e-0a1eab86d17c)
 
 
 
-### 트러블 슈팅
+### 🤾‍♂️ 트러블 슈팅
 
 <img width="1370" alt="image" src="https://github.com/user-attachments/assets/a94c0c44-422c-4228-99c6-ae04bed66173" />
