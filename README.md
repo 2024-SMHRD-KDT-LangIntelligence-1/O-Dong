@@ -50,6 +50,11 @@ by 오동로켓단
 
 ![image](https://github.com/user-attachments/assets/892bee47-84f5-424e-807f-810ea03e9cf0)
 
+<img width="1920" alt="image" src="https://github.com/user-attachments/assets/5eae607c-01f6-429d-bf67-60f1280e893d" />
+
+<img width="1920" alt="image" src="https://github.com/user-attachments/assets/c990b388-4953-42c8-b816-6f1a85e586c2" />
+
+
 
 ---
 ### ⚙ 시스템 아키텍처
