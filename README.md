@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/1c278773-d99f-4fae-b532-dff8daf608f2)# 스마트 인재 개발원 핵심 프로젝트 - 메뉴 어떠쇼(Show)☕️
+# 스마트 인재 개발원 핵심 프로젝트 - 메뉴 어떠쇼(Show)☕️
 by 오동로켓단
 
 ## 프로젝트 소개
@@ -36,6 +36,8 @@ by 오동로켓단
 
 
 </div>
+---
+
 
 ### 📌 서비스 흐름도
 <img width="1371" alt="image" src="https://github.com/user-attachments/assets/3488192d-7715-4b26-9193-872a7293ebce" />
