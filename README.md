@@ -1,4 +1,4 @@
-# 스마트 인재 개발원 핵심 프로젝트 - 메뉴 어떠쇼(Show)☕️
+![image](https://github.com/user-attachments/assets/1c278773-d99f-4fae-b532-dff8daf608f2)# 스마트 인재 개발원 핵심 프로젝트 - 메뉴 어떠쇼(Show)☕️
 by 오동로켓단
 
 ## 프로젝트 소개
@@ -10,7 +10,7 @@ by 오동로켓단
 - 팀원 : 정규연 - Front-end , DB
 - 팀원 : 정희석 - Data Modeling , Back-end
   
-## 📅개발 기간
+## 📅 개발 기간
 - 24.12.23 - 25.01.08
 
 ### 개발 환경
@@ -36,6 +36,19 @@ by 오동로켓단
 
 
 </div>
+
+### 📌 서비스 흐름도
+<img width="1371" alt="image" src="https://github.com/user-attachments/assets/3488192d-7715-4b26-9193-872a7293ebce" />
+
+---
+
+### 화면 구성
+![image](https://github.com/user-attachments/assets/ee11f59c-f17f-4e6c-aa97-8ba43d63bdc2)
+
+![image](https://github.com/user-attachments/assets/6a434207-6382-4fa4-9b6a-e4cb2b2c2e73)
+
+![image](https://github.com/user-attachments/assets/892bee47-84f5-424e-807f-810ea03e9cf0)
+
 
 ---
 ### 주요 기능
@@ -89,3 +102,7 @@ by 오동로켓단
     - 입력 키워드의 순서에 영향을 받지 않기 위해 코사인 유사도 사용(ex-시원한 복숭아 음료, 복숭아 음료 시원한 거)
   - 이후 코사인 유사도를 통해 가장 유사한 메뉴를 분석
   - 만약 입력한 데이터가 메뉴 데이터에 없을 경우 메뉴 이름과 입력 데이터를 tf-idf 처리 후 레벤슈타인 거리 알고리즘을 이용해 입력 데이터와 가장 흡사한 메뉴 설명 및 재료 데이터 내의 메뉴로 대체
+
+
+
+
